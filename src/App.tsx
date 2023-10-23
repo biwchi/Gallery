@@ -1,11 +1,7 @@
-import Header from "./components/Header";
+import { AppRouter } from './router';
 
 export default function App() {
   return (
-    <>
-      <div>
-        <Header />
-      </div>
-    </>
+    <AppRouter/>
   );
 }

@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { twMerge } from "tailwind-merge";
 
 export default function Header() {
   const links = [
@@ -21,11 +22,15 @@ export default function Header() {
 
 function HeaderLink({ to, text }: { to: string; text: string }) {
   return (
-    <Link
+    <NavLink
       to={to}
-      className='class="text-xl duration-300" border-b border-gray-700 font-light text-gray-300 transition-all hover:border-gray-300 hover:text-gray-100'
+      className={twMerge(
+        'duration-300" border-b border-gray-700 text-xl',
+        "font-light text-gray-300 transition-all hover:border-gray-300",
+        "hover:text-gray-100 [&.active]:border-gray-300 [&.active]:text-gray-100",
+      )}
     >
       {text}
-    </Link>
+    </NavLink>
   );
 }
