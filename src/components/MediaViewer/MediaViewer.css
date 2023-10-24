@@ -1,0 +1,12 @@
+.example {
+  transition: all 0.75s;
+}
+
+.example.preEnter,
+.example.exiting {
+  opacity: 0;
+}
+
+.example.exited {
+  display: none;
+}

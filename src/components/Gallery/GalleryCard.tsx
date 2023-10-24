@@ -1,15 +1,17 @@
 import { Icon } from "@iconify-icon/react";
-import { Link, unstable_useViewTransitionState } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type GalleryCardProps = {
   imagePreview: string;
   title: string;
   type: "image" | "video" | "audio";
+  onClick?: () => void;
 };
 
 export default function GalleryCard({
   imagePreview,
   title,
+  onClick,
   type = "image",
 }: GalleryCardProps) {
   const icons = {
@@ -18,23 +20,16 @@ export default function GalleryCard({
     audio: "ph:speaker-simple-high-duotone",
   };
 
-  const vt = unstable_useViewTransitionState(`file/${title}`);
   return (
-    <div className="relative aspect-square cursor-pointer overflow-hidden rounded-md border border-gray-600">
-      <Link
-        className="absolute left-0 top-0 h-full w-full"
-        to={`file/${title}`}
-        unstable_viewTransition
-      >
-        <img
-          className="object-cover"
-          src={imagePreview}
-          alt={title}
-          style={{
-            viewTransitionName: vt ? "image-expand" : "",
-          }}
-        />
-      </Link>
+    <div
+      onClick={onClick}
+      className="relative aspect-square cursor-pointer overflow-hidden rounded-md border border-gray-600"
+    >
+      <img
+        className="absolute left-0 top-0 h-full w-full object-cover"
+        src={imagePreview}
+        alt={title}
+      />
 
       <Icon
         className="absolute left-2 top-2 rounded-full bg-black p-2.5 text-2xl"
