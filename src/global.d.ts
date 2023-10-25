@@ -1,4 +1,4 @@
-export type FileType = "photo" | "video" | "audio";
+export type FileType = "image" | "video" | "audio";
 
 export type AppFile = {
   id: string;

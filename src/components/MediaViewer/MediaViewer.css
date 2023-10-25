@@ -1,12 +1,12 @@
-.example {
-  transition: all 0.75s;
+.media-viewer {
+  transition: opacity 0.3s;
 }
 
-.example.preEnter,
-.example.exiting {
+.media-viewer.preEnter,
+.media-viewer.exiting {
   opacity: 0;
 }
 
-.example.exited {
+.media-viewer.exited {
   display: none;
 }

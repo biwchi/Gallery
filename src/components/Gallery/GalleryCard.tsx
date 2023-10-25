@@ -1,10 +1,11 @@
+import { FileType } from "@/global";
 import { Icon } from "@iconify-icon/react";
 import { Link } from "react-router-dom";
 
 type GalleryCardProps = {
   imagePreview: string;
   title: string;
-  type: "image" | "video" | "audio";
+  type: FileType;
   onClick?: () => void;
 };
 

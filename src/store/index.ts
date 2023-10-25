@@ -5,6 +5,8 @@ const store = configureStore({
   reducer: {
     mediaViewer: mediaViewerReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
   devTools: true,
 });
 

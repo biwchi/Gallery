@@ -1,104 +1,160 @@
 import "./MediaViewer.css";
 
-import { useBreakpoints } from "@/hooks/useBreakpoints";
-import { breakpointsWidth } from "@/common";
 import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import useTransition from "react-transition-state";
+import MediaViewerSlide from "./MediaViewerSlide";
+
 import {
   mediaViewerActions,
   selectMediaViewer,
 } from "@/store/mediaViewerSlice";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { twMerge } from "tailwind-merge";
-import useTransition from "react-transition-state";
+import { AppFile } from "@/global";
+
+export type Slide = AppFile | undefined;
+
+type Slides = {
+  prev: Slide;
+  active: Slide;
+  next: Slide;
+};
 
 export default function MediaViewer() {
   const mediaViewer = useAppSelector(selectMediaViewer);
   const dispatch = useAppDispatch();
 
-  const [state, toggle] = useTransition({ timeout: 5000 });
+  const [slides, setSlides] = useState<Slides | null>(null);
+  const [state, toggle] = useTransition({
+    timeout: 300,
+    preEnter: true,
+    unmountOnExit: true,
+  });
 
-  const { setFiles, toggleMediaViewer } = mediaViewerActions;
-  const { breakpoint } = useBreakpoints();
-
-  const imageWidth = () => {
-    if (breakpoint.xs) return breakpointsWidth.xs;
-    if (breakpoint.sm) return breakpointsWidth.sm;
-    if (breakpoint.md) return breakpointsWidth.md;
-    if (breakpoint.lg) return breakpointsWidth.lg;
-    if (breakpoint.xl) return breakpointsWidth.xl;
-  };
+  const { isOpened, currentFileIndex, files } = mediaViewer;
+  const {
+    setFiles,
+    toggleMediaViewer,
+    incrementZoom,
+    decrementZoom,
+    currentFileIndexIncrement,
+    currentFileIndexDecrement,
+  } = mediaViewerActions;
 
   const handleClose = () => {
     dispatch(setFiles([]));
     dispatch(toggleMediaViewer(false));
   };
 
-  useEffect(() => {
-    toggle(true);
-    const closeEscapeKey = (e: KeyboardEvent) =>
-      e.key === "Escape" ? handleClose() : null;
+  const hasNext = () => !!files[currentFileIndex + 1];
+  const hasPrev = () => !!files[currentFileIndex - 1];
+  const slideNext = () => dispatch(currentFileIndexIncrement());
+  const slidePrev = () => dispatch(currentFileIndexDecrement());
 
-    document.addEventListener("keydown", closeEscapeKey);
+  function slidesUpdate() {
+    return setSlides({
+      prev: files[currentFileIndex - 1],
+      active: files[currentFileIndex],
+      next: files[currentFileIndex + 1],
+    });
+  }
+
+  function keyboardEvents(e: KeyboardEvent) {
+    if (e.key === "Escape") return handleClose();
+    else if (e.key === "ArrowLeft") return slidePrev();
+    else if (e.key === "ArrowRight") return slideNext();
+  }
+
+  function wheelEvent(e: WheelEvent) {
+    if (e.deltaY > 0) slideNext();
+    else slidePrev();
+  }
+
+  useEffect(() => {
+    if (isOpened) {
+      toggle(true);
+      document.addEventListener("keydown", keyboardEvents);
+      document.addEventListener("wheel", wheelEvent);
+    }
+
+    if (!isOpened) toggle(false);
 
     return () => {
-      document.removeEventListener("keydown", closeEscapeKey);
+      document.removeEventListener("keydown", keyboardEvents);
+      document.removeEventListener("wheel", wheelEvent);
     };
-  });
+  }, [isOpened]);
 
-  useEffect(() => console.log(state), [state]);
-
-  if (!mediaViewer.isOpened && !mediaViewer.files.length) return null;
+  useEffect(() => {
+    slidesUpdate();
+  }, [currentFileIndex]);
 
   return (
-    <ReactPortal wrapperId="mediaViewer">
-      <div
-        className={twMerge(
-          "fixed left-0 top-0 h-screen w-screen bg-black/20 backdrop-blur-[2px]",
-          `example ${state.status}`,
-        )}
-      >
-        <div>
-          <div className="relative z-50 flex items-center justify-between p-5">
-            <h1>Photo.png</h1>
+    <>
+      {state.isMounted && slides && (
+        <ReactPortal wrapperId="mediaViewer">
+          <div
+            className={twMerge(
+              "fixed left-0 top-0 h-screen w-screen bg-black/20 backdrop-blur-[2px]",
+              `media-viewer ${state.status}`,
+            )}
+          >
+            <div className="relative z-50 flex items-center justify-between bg-gradient-to-b to-black/05 from-black p-5">
+              <h1>{slides.active?.title}</h1>
 
-            <div className="flex gap-2">
-              <BaseIconButton icon="ph:download-simple" />
-              <BaseIconButton icon="ph:magnifying-glass-minus" />
-              <BaseIconButton icon="ph:magnifying-glass-plus" />
-              <BaseIconButton onClick={handleClose} icon="ph:x" />
+              <div className="flex gap-2">
+                <BaseIconButton icon="ph:download-simple" />
+                <BaseIconButton
+                  onClick={() => dispatch(decrementZoom())}
+                  icon="ph:magnifying-glass-minus"
+                />
+                <BaseIconButton
+                  onClick={() => dispatch(incrementZoom())}
+                  icon="ph:magnifying-glass-plus"
+                />
+                <BaseIconButton onClick={handleClose} icon="ph:x" />
+              </div>
             </div>
-          </div>
 
-          <ButtonNavigation />
-          <ButtonNavigation isRight />
-
-          <div className="absolute bottom-0 left-0 right-0 top-0 flex h-full items-center justify-center px-20 py-20">
-            <img
-              className=""
-              style={{ width: imageWidth() }}
-              src={
-                "https://cdn.cloudflare.steamstatic.com/steam/apps/292030/ss_5710298af2318afd9aa72449ef29ac4a2ef64d8e.1920x1080.jpg?t=1693590732"
-              }
+            <ButtonNavigation disabled={!hasPrev()} onClick={slidePrev} />
+            <ButtonNavigation
+              disabled={!hasNext()}
+              onClick={slideNext}
+              isRight
             />
+
+            <MediaViewerSlide type="prev" slide={slides.prev} />
+            <MediaViewerSlide slide={slides.active} />
+            <MediaViewerSlide type="next" slide={slides.next} />
           </div>
-        </div>
-      </div>
-    </ReactPortal>
+        </ReactPortal>
+      )}
+    </>
   );
 }
 
-function ButtonNavigation({ isRight }: { isRight?: boolean }) {
+function ButtonNavigation({
+  isRight,
+  disabled,
+  onClick,
+}: {
+  disabled: boolean;
+  isRight?: boolean;
+  onClick?: () => void;
+}) {
   return (
-    <div
+    <button
+      onClick={onClick}
       className={twMerge(
-        "absolute top-0 z-40 flex h-full cursor-pointer items-center px-4 text-4xl opacity-0 transition hover:bg-black/30 hover:opacity-100",
+        "absolute top-0 z-40 flex h-full cursor-pointer items-center px-16 text-4xl opacity-0 transition hover:opacity-100 active:bg-black/10",
+        disabled && "invisible opacity-0",
         isRight ? "right-0" : "left-0",
       )}
     >
       <Icon icon={isRight ? "ph:arrow-right" : "ph:arrow-left"} />
-    </div>
+    </button>
   );
 }
