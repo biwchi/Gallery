@@ -17,7 +17,7 @@ export function useBreakpoints() {
   });
 
   const handleResize = () => {
-    setWindowSize({
+    return setWindowSize({
       width: window.innerWidth,
       height: window.innerHeight,
     });
