@@ -12,8 +12,8 @@ const breakpointsOff = {
 export function useBreakpoints() {
   const [breakpoint, setBreakpoint] = useState<Breakpoints>(breakpointsOff);
   const [windowSize, setWindowSize] = useState({
-    width: 0,
-    height: 0,
+    width: window.innerWidth,
+    height: window.innerHeight,
   });
 
   const handleResize = () => {
@@ -25,21 +25,16 @@ export function useBreakpoints() {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-    handleResize();
 
     if (0 < windowSize.width && windowSize.width < 600) {
       setBreakpoint({ ...breakpointsOff, xs: true });
-    }
-    if (600 < windowSize.width && windowSize.width < 960) {
+    } else if (600 < windowSize.width && windowSize.width < 960) {
       setBreakpoint({ ...breakpointsOff, sm: true });
-    }
-    if (960 < windowSize.width && windowSize.width < 1280) {
+    } else if (960 < windowSize.width && windowSize.width < 1280) {
       setBreakpoint({ ...breakpointsOff, md: true });
-    }
-    if (1280 < windowSize.width && windowSize.width < 1920) {
+    } else if (1280 < windowSize.width && windowSize.width < 1920) {
       setBreakpoint({ ...breakpointsOff, lg: true });
-    }
-    if (windowSize.width >= 1920) {
+    } else if (windowSize.width >= 1920) {
       setBreakpoint({ ...breakpointsOff, xl: true });
     }
 

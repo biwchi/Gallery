@@ -14,10 +14,17 @@ type MediaViewerSlideProps = {
   type?: "prev" | "active" | "next";
 };
 
+type Position = { x: number; y: number };
+
 const initialMoveable = {
   moveable: false,
   x: false,
   y: false,
+};
+
+const initialPosition = {
+  x: 0,
+  y: 0,
 };
 
 export default function MediaViewerSlide({
@@ -27,14 +34,22 @@ export default function MediaViewerSlide({
   const mediaViewer = useAppSelector(selectMediaViewer);
   const dispatch = useAppDispatch();
   const mediaPlayerContentRef = useRef<HTMLDivElement>(null);
+  const slideRef = useRef<HTMLDivElement>(null);
 
   const zoomTransitionDuration = 150;
+  const isPressed = useRef(false);
+  const deltaPosition = useRef<Position & { lastX: number; lastY: number }>({
+    ...initialPosition,
+    lastX: 0,
+    lastY: 0,
+  });
 
   const { zoom } = mediaViewer;
   const { toggleMediaViewer, setFiles } = mediaViewerActions;
   const { breakpoint, windowSize } = useBreakpoints();
 
   const [isMoveable, setMoveable] = useState(initialMoveable);
+  const [position, setPosition] = useState<Position>(initialPosition);
 
   const checkMoveable = () => {
     if (!mediaPlayerContentRef.current) return initialMoveable;
@@ -64,7 +79,9 @@ export default function MediaViewerSlide({
   function slideStyle() {
     if (type === "active")
       return {
-        transform: `translate3d(0, 0, 0) scale(${zoom})`,
+        transform: `translate3d(${deltaPosition.current.lastX * zoom}px, ${
+          deltaPosition.current.lastY * zoom
+        }px, 0) scale(${zoom})`,
       };
 
     if (type === "prev")
@@ -85,25 +102,69 @@ export default function MediaViewerSlide({
 
   useEffect(() => {
     if (type !== "active") return;
-
     setTimeout(() => {
       const checkForMoveable = checkMoveable();
-
       if (checkForMoveable.moveable === isMoveable.moveable) return;
-
       setMoveable(checkForMoveable);
     }, zoomTransitionDuration);
   }, [zoom]);
 
   useEffect(() => {
-    setMoveable(initialMoveable);
-  }, [mediaViewer.isOpened]);
+    const slide = slideRef.current;
+    const slideContent = mediaPlayerContentRef.current;
+    if (!slideContent || !slide) return;
 
-  useEffect(() => {
-  }, [isMoveable])
+    function mouseDown(e: MouseEvent) {
+      if (!slideContent) return;
+
+      isPressed.current = true;
+
+      deltaPosition.current = {
+        ...deltaPosition.current,
+        x: e.clientX,
+        y: e.clientY,
+      };
+    }
+
+    function mouseMove(e: MouseEvent) {
+      if (!isPressed.current || !slideContent || !slide) return;
+
+      let newPosition = {
+        x: e.clientX - deltaPosition.current.x + deltaPosition.current.lastX,
+        y: e.clientY - deltaPosition.current.y,
+      };
+      console.log(newPosition.x, deltaPosition.current.lastX);
+      if (!isMoveable.x) newPosition.x = 0;
+      if (!isMoveable.y) newPosition.y = 0;
+      slide.style.transform = `translate3d(${newPosition.x}px, ${newPosition.y}px, 0) scale(${zoom})`;
+      slide.style.transition = "none";
+    }
+
+    function mouseUp(e: MouseEvent) {
+      if (!slide || !slideContent) return;
+
+      isPressed.current = false;
+      deltaPosition.current.lastX = e.clientX - deltaPosition.current.x;
+      deltaPosition.current.lastY = e.clientY - deltaPosition.current.x;
+      slide.style.transition = "";
+    }
+
+    if (isMoveable.moveable) {
+      slideContent.addEventListener("mousedown", mouseDown);
+      slideContent.addEventListener("mousemove", mouseMove);
+      slideContent.addEventListener("mouseup", mouseUp);
+      slideContent.addEventListener("pointerleave", mouseUp);
+    } else {
+      slideContent.removeEventListener("mousedown", mouseDown);
+      slideContent.removeEventListener("mousemove", mouseMove);
+      slideContent.removeEventListener("mouseup", mouseUp);
+      slideContent.removeEventListener("pointerleave", mouseUp);
+    }
+  }, [isMoveable, zoom]);
 
   return (
     <div
+      ref={slideRef}
       style={slideStyle()}
       className={twMerge(
         "absolute bottom-0 left-0 right-0 top-0 flex h-full transition-transform",

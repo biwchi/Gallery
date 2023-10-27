@@ -119,12 +119,12 @@ export default function MediaViewer() {
               </div>
             </div>
 
-            <ButtonNavigation disabled={!hasPrev()} onClick={slidePrev} />
+            {/* <ButtonNavigation disabled={!hasPrev()} onClick={slidePrev} />
             <ButtonNavigation
               disabled={!hasNext()}
               onClick={slideNext}
               isRight
-            />
+            /> */}
 
             <MediaViewerSlide type="prev" slide={slides.prev} />
             <MediaViewerSlide slide={slides.active} />
