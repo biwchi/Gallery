@@ -1,0 +1,14 @@
+.modal {
+  transition: transform 0.3s;
+}
+
+.modal.preEnter {
+  transform: translateY(-30px);
+}
+.modal.exiting {
+  transform: translateY(30px);
+}
+
+.modal.exited {
+  display: none;
+}

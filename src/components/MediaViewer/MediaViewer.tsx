@@ -34,7 +34,7 @@ export default function MediaViewer() {
     unmountOnExit: true,
   });
 
-  const { isOpened, currentFileIndex, files } = mediaViewer;
+  const { isOpened, isMoveable, currentFileIndex, files } = mediaViewer;
   const {
     setFiles,
     toggleMediaViewer,
@@ -69,6 +69,7 @@ export default function MediaViewer() {
   }
 
   function wheelEvent(e: WheelEvent) {
+    if (e.ctrlKey) return;
     if (e.deltaY > 0) slideNext();
     else slidePrev();
   }
@@ -102,7 +103,7 @@ export default function MediaViewer() {
               `media-viewer ${state.status}`,
             )}
           >
-            <div className="relative z-50 flex items-center justify-between bg-gradient-to-b to-black/05 from-black p-5">
+            <div className="to-black/05 relative z-50 flex items-center justify-between bg-gradient-to-b from-black p-5">
               <h1>{slides.active?.title}</h1>
 
               <div className="flex gap-2">
@@ -119,16 +120,20 @@ export default function MediaViewer() {
               </div>
             </div>
 
-            {/* <ButtonNavigation disabled={!hasPrev()} onClick={slidePrev} />
-            <ButtonNavigation
-              disabled={!hasNext()}
-              onClick={slideNext}
-              isRight
-            /> */}
+            {!isMoveable.moveable && (
+              <>
+                <ButtonNavigation disabled={!hasPrev()} onClick={slidePrev} />
+                <ButtonNavigation
+                  disabled={!hasNext()}
+                  onClick={slideNext}
+                  isRight
+                />
+              </>
+            )}
 
-            <MediaViewerSlide type="prev" slide={slides.prev} />
+            {/* <MediaViewerSlide type="prev" slide={slides.prev} /> */}
             <MediaViewerSlide slide={slides.active} />
-            <MediaViewerSlide type="next" slide={slides.next} />
+            {/* <MediaViewerSlide type="next" slide={slides.next} /> */}
           </div>
         </ReactPortal>
       )}

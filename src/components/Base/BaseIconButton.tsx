@@ -29,12 +29,13 @@ type BaseIconButtonProps = {
 export default function BaseIconButton({
   variant,
   size,
+  shape,
   icon = "ph:placeholder",
   ...props
 }: BaseIconButtonProps) {
   return (
     <button className="aspect-auto" {...props}>
-      <Icon className={iconButton({ variant, size })} icon={icon} />
+      <Icon className={iconButton({ shape, variant, size })} icon={icon} />
     </button>
   );
 }

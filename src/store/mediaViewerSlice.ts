@@ -7,6 +7,11 @@ type MediaViewer = {
   currentFileIndex: number;
   isOpened: boolean;
   zoom: number;
+  isMoveable: {
+    moveable: boolean;
+    x: boolean;
+    y: boolean;
+  };
 };
 
 const initialState: MediaViewer = {
@@ -14,6 +19,11 @@ const initialState: MediaViewer = {
   currentFileIndex: -1,
   zoom: 1,
   isOpened: false,
+  isMoveable: {
+    moveable: false,
+    x: false,
+    y: false,
+  },
 };
 
 export const mediaViewerSlice = createSlice({
@@ -43,6 +53,16 @@ export const mediaViewerSlice = createSlice({
       if (!state.files[state.currentFileIndex - 1]) return;
       state.currentFileIndex--;
       state.zoom = 1;
+    },
+    toggleMoveable: (
+      state,
+      action: PayloadAction<{
+        moveable: boolean;
+        x: boolean;
+        y: boolean;
+      }>,
+    ) => {
+      state.isMoveable = action.payload;
     },
     toggleMediaViewer: (state, action: PayloadAction<boolean>) => {
       state.isOpened = action.payload;

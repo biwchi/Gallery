@@ -14,7 +14,7 @@ type MediaViewerSlideProps = {
   type?: "prev" | "active" | "next";
 };
 
-type Position = { x: number; y: number };
+type Position = { x: number; y: number; lastX: number; lastY: number };
 
 const initialMoveable = {
   moveable: false,
@@ -25,6 +25,8 @@ const initialMoveable = {
 const initialPosition = {
   x: 0,
   y: 0,
+  lastX: 0,
+  lastY: 0,
 };
 
 export default function MediaViewerSlide({
@@ -33,23 +35,17 @@ export default function MediaViewerSlide({
 }: MediaViewerSlideProps) {
   const mediaViewer = useAppSelector(selectMediaViewer);
   const dispatch = useAppDispatch();
+
   const mediaPlayerContentRef = useRef<HTMLDivElement>(null);
   const slideRef = useRef<HTMLDivElement>(null);
+  const isPressed = useRef(false);
+  const deltaPosition = useRef<Position>(initialPosition);
 
   const zoomTransitionDuration = 150;
-  const isPressed = useRef(false);
-  const deltaPosition = useRef<Position & { lastX: number; lastY: number }>({
-    ...initialPosition,
-    lastX: 0,
-    lastY: 0,
-  });
 
-  const { zoom } = mediaViewer;
-  const { toggleMediaViewer, setFiles } = mediaViewerActions;
+  const { zoom, isMoveable } = mediaViewer;
+  const { toggleMediaViewer, setFiles, toggleMoveable } = mediaViewerActions;
   const { breakpoint, windowSize } = useBreakpoints();
-
-  const [isMoveable, setMoveable] = useState(initialMoveable);
-  const [position, setPosition] = useState<Position>(initialPosition);
 
   const checkMoveable = () => {
     if (!mediaPlayerContentRef.current) return initialMoveable;
@@ -77,11 +73,18 @@ export default function MediaViewerSlide({
   };
 
   function slideStyle() {
+    if (zoom === 1 || !isMoveable.moveable) {
+      deltaPosition.current.lastX = 0;
+      deltaPosition.current.lastY = 0;
+    }
+    if (zoom > 1) {
+      deltaPosition.current.lastX /= zoom;
+      deltaPosition.current.lastY /= zoom;
+    }
+
     if (type === "active")
       return {
-        transform: `translate3d(${deltaPosition.current.lastX * zoom}px, ${
-          deltaPosition.current.lastY * zoom
-        }px, 0) scale(${zoom})`,
+        transform: `translate3d(${deltaPosition.current.lastX}px, ${deltaPosition.current.lastY}px, 0) scale(${zoom})`,
       };
 
     if (type === "prev")
@@ -102,12 +105,16 @@ export default function MediaViewerSlide({
 
   useEffect(() => {
     if (type !== "active") return;
+
     setTimeout(() => {
       const checkForMoveable = checkMoveable();
-      if (checkForMoveable.moveable === isMoveable.moveable) return;
-      setMoveable(checkForMoveable);
+      const toString = JSON.stringify;
+
+      if (toString(checkForMoveable) === toString(isMoveable)) return;
+
+      dispatch(toggleMoveable(checkForMoveable));
     }, zoomTransitionDuration);
-  }, [zoom]);
+  }, [zoom, breakpoint]);
 
   useEffect(() => {
     const slide = slideRef.current;
@@ -115,7 +122,7 @@ export default function MediaViewerSlide({
     if (!slideContent || !slide) return;
 
     function mouseDown(e: MouseEvent) {
-      if (!slideContent) return;
+      if (!slideContent || isPressed.current) return;
 
       isPressed.current = true;
 
@@ -131,35 +138,40 @@ export default function MediaViewerSlide({
 
       let newPosition = {
         x: e.clientX - deltaPosition.current.x + deltaPosition.current.lastX,
-        y: e.clientY - deltaPosition.current.y,
+        y: e.clientY - deltaPosition.current.y + deltaPosition.current.lastY,
       };
-      console.log(newPosition.x, deltaPosition.current.lastX);
+
       if (!isMoveable.x) newPosition.x = 0;
       if (!isMoveable.y) newPosition.y = 0;
+
       slide.style.transform = `translate3d(${newPosition.x}px, ${newPosition.y}px, 0) scale(${zoom})`;
       slide.style.transition = "none";
     }
 
     function mouseUp(e: MouseEvent) {
-      if (!slide || !slideContent) return;
+      if (!slide || !slideContent || !isPressed.current) return;
+
+      const { lastX, lastY } = deltaPosition.current;
 
       isPressed.current = false;
-      deltaPosition.current.lastX = e.clientX - deltaPosition.current.x;
-      deltaPosition.current.lastY = e.clientY - deltaPosition.current.x;
+      deltaPosition.current.lastX = e.clientX - deltaPosition.current.x + lastX;
+      deltaPosition.current.lastY = e.clientY - deltaPosition.current.y + lastY;
       slide.style.transition = "";
     }
 
     if (isMoveable.moveable) {
-      slideContent.addEventListener("mousedown", mouseDown);
-      slideContent.addEventListener("mousemove", mouseMove);
-      slideContent.addEventListener("mouseup", mouseUp);
+      slideContent.addEventListener("pointerdown", mouseDown);
+      slideContent.addEventListener("pointermove", mouseMove);
+      slideContent.addEventListener("pointerup", mouseUp);
       slideContent.addEventListener("pointerleave", mouseUp);
-    } else {
-      slideContent.removeEventListener("mousedown", mouseDown);
-      slideContent.removeEventListener("mousemove", mouseMove);
-      slideContent.removeEventListener("mouseup", mouseUp);
-      slideContent.removeEventListener("pointerleave", mouseUp);
     }
+
+    return () => {
+      slideContent.removeEventListener("pointerdown", mouseDown);
+      slideContent.removeEventListener("pointermove", mouseMove);
+      slideContent.removeEventListener("pointerup", mouseUp);
+      slideContent.removeEventListener("pointerleave", mouseUp);
+    };
   }, [isMoveable, zoom]);
 
   return (
@@ -178,6 +190,7 @@ export default function MediaViewerSlide({
               ref={mediaPlayerContentRef}
               className={twMerge(
                 isMoveable.moveable ? "cursor-move" : "cursor-default",
+                "max-h-full",
               )}
             >
               {slide.type === "image" && (

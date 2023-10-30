@@ -1,6 +1,9 @@
+import { BaseButton } from "@/components/Base/BaseButton";
 import BaseInput from "@/components/Base/BaseInput";
 import GalleryCard from "@/components/Gallery/GalleryCard";
+import Modal from "@/components/Modal/Modal";
 import { AppFile } from "@/global";
+import { useToggle } from "@/hooks";
 import { useAppDispatch } from "@/hooks/useStore";
 import { mediaViewerActions } from "@/store/mediaViewerSlice";
 import { useState } from "react";
@@ -40,6 +43,7 @@ export default function Media() {
   const dispatch = useAppDispatch();
 
   const [appFiles, _setAppFiles] = useState<AppFile[]>(initialFiles);
+  const [isFileModal, toggleFileModal] = useToggle(false);
 
   const { toggleMediaViewer, setFiles, setCurrentFileIndex } =
     mediaViewerActions;
@@ -51,7 +55,18 @@ export default function Media() {
   }
   return (
     <div>
-      <h1 className="text-3xl font-medium">All media</h1>
+      <Modal isModal={isFileModal} toggleModal={toggleFileModal}>
+        <div>Hello pidr</div>
+      </Modal>
+
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-medium">All media</h1>
+        <BaseButton
+          onClick={() => toggleFileModal()}
+          text="Upload new files"
+          leftIcon="ph:upload"
+        />
+      </div>
 
       <div className="py-7">
         <BaseInput placeholder="Search..." />
