@@ -4,7 +4,6 @@ import { useClickOutside } from "@/hooks";
 import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
 import { useEffect, useRef } from "react";
-import useTransition from "react-transition-state";
 import { twMerge } from "tailwind-merge";
 
 type ModalProps = {
@@ -24,29 +23,27 @@ export default function Modal({
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const [state, toggle] = useTransition({
-    timeout: 300,
-    preEnter: true,
-    unmountOnExit: true,
-  });
-
   const handleClose = () => toggleModal(false);
 
   useEffect(() => {
-    toggle(isModal);
+    const handleEvent = (e: KeyboardEvent) => {
+      e.code == "Escape" ? handleClose() : null;
+    };
+
+    addEventListener("keydown", handleEvent);
+    if (!isModal) removeEventListener("keydown", handleEvent);
   }, [isModal]);
 
-  useClickOutside(modalRef, () => handleClose);
+  useClickOutside(modalRef, () => handleClose());
   return (
     <>
-      {state.isMounted && (
+      {isModal && (
         <ReactPortal wrapperId="modals">
           <div className="fixed left-0 top-0 flex h-screen w-screen items-center justify-center">
             <div
               ref={modalRef}
               className={twMerge(
-                "min-w-[30rem] rounded-xl bg-background p-10",
-                `modal ${state.status}`,
+                "z-50 min-w-[30rem] rounded-xl bg-black p-5 shadow-md",
               )}
             >
               {!noHeader && (
@@ -59,6 +56,8 @@ export default function Modal({
 
               <div>{children}</div>
             </div>
+
+            <div className="fixed h-full w-full bg-black/20 backdrop-blur-[2px]" />
           </div>
         </ReactPortal>
       )}

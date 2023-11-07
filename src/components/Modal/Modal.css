@@ -1,11 +1,13 @@
 .modal {
-  transition: transform 0.3s;
+  transition: all 0.3s;
 }
 
 .modal.preEnter {
+  opacity: 0;
   transform: translateY(-30px);
 }
 .modal.exiting {
+  opacity: 0;
   transform: translateY(30px);
 }
 

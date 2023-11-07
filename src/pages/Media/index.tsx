@@ -6,6 +6,7 @@ import { AppFile } from "@/global";
 import { useToggle } from "@/hooks";
 import { useAppDispatch } from "@/hooks/useStore";
 import { mediaViewerActions } from "@/store/mediaViewerSlice";
+import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { useState } from "react";
 
 const initialFiles: AppFile[] = [
@@ -55,8 +56,24 @@ export default function Media() {
   }
   return (
     <div>
-      <Modal isModal={isFileModal} toggleModal={toggleFileModal}>
-        <div>Hello pidr</div>
+      <Modal
+        title="Upload files"
+        isModal={isFileModal}
+        toggleModal={toggleFileModal}
+      >
+        <div>
+          <input
+            type="file"
+            id="fileUpload"
+            className="invisible absolute h-0 w-0"
+          />
+          <label
+            htmlFor="fileUpload"
+            className="flex h-32 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-primary"
+          >
+            <Icon className="text-3xl text-primary" icon="ph:file-dashed" />
+          </label>
+        </div>
       </Modal>
 
       <div className="flex items-center justify-between">
