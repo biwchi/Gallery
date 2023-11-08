@@ -1,0 +1,19 @@
+.progress {
+  @apply absolute h-full w-full cursor-pointer bg-transparent outline-none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.progress::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  @apply relative top-1/2 h-3 w-3 -translate-y-1/2 scale-[0.2] rounded-full border-none bg-white opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100;
+}
+
+.progress::-webkit-slider-runnable-track {
+  @apply bg-gray-light h-full rounded-full;
+}
+
+.progress::-webkit-progress-value {
+  @apply bg-white;
+}

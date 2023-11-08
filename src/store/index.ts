@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { mediaViewerReducer } from "./mediaViewerSlice";
+import { audioPlayerReducer } from "./audioPlayerSlice";
 
 const store = configureStore({
   reducer: {
     mediaViewer: mediaViewerReducer,
+    audioPlayer: audioPlayerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
