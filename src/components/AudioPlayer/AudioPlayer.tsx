@@ -11,34 +11,81 @@ import {
   selectAudioPlayer,
 } from "@/store/audioPlayerSlice";
 import { twMerge } from "tailwind-merge";
+import { useDebouncedCallback } from "@/hooks/useDebouncedCallback";
+import { getTimeFromSeconds } from "@/utils";
 
 const icon = {
   pause: "line-md:pause-to-play-filled-transition",
   play: "line-md:play-filled-to-pause-transition",
 };
 
+const initialPlayerState = {
+  duration: 0,
+  currentTime: 0,
+  currentTimeFormatted: "",
+  durationFormatted: "",
+};
+
 export default function AudioPlayer() {
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
+  const interval = useRef<NodeJS.Timeout | undefined>();
+  const isPressed = useRef(false);
 
   const audioPlayer = useSelector(selectAudioPlayer);
   const dispatch = useAppDispatch();
 
-  const { files, currentSound, currentIndex } = audioPlayer;
+  const { files, currentSound, hasNext, hasPrev } = audioPlayer;
   const { incrementIndex, decrementIndex } = audioPlayerActions;
 
   const [isPaused, togglePaused] = useToggle(true);
+  const [playerState, setPlayerState] = useState(initialPlayerState);
 
   useEffect(() => {
-    if (!isPaused) audioPlayerRef.current?.play();
-    else audioPlayerRef.current?.pause();
+    const player = audioPlayerRef.current;
+    console.log(isPaused);
+    if (!player) return;
+
+    if (!isPaused) {
+      audioPlayerRef.current?.play();
+
+      interval.current = setInterval(() => {
+        if (!player || isNaN(player.duration) || isPressed.current) return;
+
+        const currentTime = player.currentTime;
+        const duration = playerState.duration || player.duration;
+
+        const durationFormatted = getTimeFromSeconds(duration);
+        const currentTimeFormatted = getTimeFromSeconds(currentTime);
+
+        if (!isPressed.current) {
+          setPlayerState({
+            duration,
+            currentTime,
+            durationFormatted,
+            currentTimeFormatted,
+          });
+        }
+      }, 100);
+
+      return;
+    }
+
+    audioPlayerRef.current?.pause();
+    clearInterval(interval.current ? interval.current : undefined);
   }, [isPaused]);
+
+  useEffect(() => {
+    if (!audioPlayerRef.current) return;
+    setPlayerState(initialPlayerState);
+    audioPlayerRef.current.play();
+  }, [currentSound]);
 
   return (
     <ReactPortal wrapperId="audioPlayer">
       <div
         className={twMerge(
-          "fixed left-1/2 -translate-x-1/2 font-sans transition-all",
-          !!files.length
+          "fixed left-1/2 -translate-x-1/2 font-sans transition-all duration-300",
+          !files.length
             ? "invisible -bottom-20 opacity-0"
             : " visible bottom-2.5 opacity-100",
         )}
@@ -46,12 +93,15 @@ export default function AudioPlayer() {
         <audio
           ref={audioPlayerRef}
           controls
-          src="https://dl2.mp3party.net/online/8866310.mp3"
+          src={currentSound.file}
           className="invisible absolute h-0 w-0"
+          onPlay={() => togglePaused(false)}
+          onPause={() => togglePaused(true)}
         ></audio>
         <div className="flex items-center gap-4 rounded-full bg-black px-5 py-2.5 shadow-xl">
           <div className="flex text-2xl">
             <BaseIconButton
+              // disabled={!hasPrev}
               variant={"white"}
               size={"bigIcon"}
               icon="material-symbols:skip-previous-rounded"
@@ -64,6 +114,7 @@ export default function AudioPlayer() {
               icon={isPaused ? icon.pause : icon.play}
             />
             <BaseIconButton
+              // disabled={!hasNext}
               variant={"white"}
               size={"bigIcon"}
               icon="material-symbols:skip-next-rounded"
@@ -71,21 +122,32 @@ export default function AudioPlayer() {
             />
           </div>
 
-          <div className="flex min-w-[26rem] flex-col gap-2">
+          <div
+            className={twMerge(
+              "flex flex-col gap-2 transition-all duration-500",
+              !files.length ? "min-w-[15rem]" : "min-w-[26rem]",
+            )}
+          >
             <p className="whitespace-nowrap text-center">
               {currentSound.artist && (
-                <span className="text-gray-light">
-                  {currentSound.artist} -{" "}
-                </span>
+                <span className="text-gray-light">{currentSound.artist} -</span>
               )}
-              <span className="font-medium">{currentSound.name}</span>
+              <span className="font-medium"> {currentSound.name}</span>
             </p>
 
-            <AudioProgressBar isPaused={isPaused} player={audioPlayerRef} />
+            <AudioProgressBar
+              duration={playerState.duration}
+              currentTime={playerState.currentTime}
+              onRewind={(newPressed, newTime) => {
+                if (!audioPlayerRef.current) return;
+                isPressed.current = newPressed;
+                audioPlayerRef.current.currentTime = newTime;
+              }}
+            />
 
-            <div className="text-gray-light flex items-center justify-between text-sm">
-              <span>{audioPlayerRef.current?.currentTime}</span>
-              <span>{audioPlayerRef.current?.duration}</span>
+            <div className="flex items-center justify-between text-sm text-gray-light">
+              <span>{playerState.currentTimeFormatted}</span>
+              <span>{playerState.durationFormatted}</span>
             </div>
           </div>
 
@@ -102,58 +164,44 @@ export default function AudioPlayer() {
 }
 
 type AudioProgressBarProps = {
-  isPaused: boolean;
-  player: RefObject<HTMLAudioElement>;
+  duration: number;
+  currentTime: number;
+  onRewind: (isPressed: boolean, newTime: number) => void;
 };
 
-function AudioProgressBar({ isPaused, player }: AudioProgressBarProps) {
+function AudioProgressBar({
+  duration,
+  currentTime,
+  onRewind,
+}: AudioProgressBarProps) {
   const progressLineRef = useRef<HTMLInputElement>(null);
   const currentTimeLineRef = useRef<HTMLDivElement>(null);
-  const interval = useRef<NodeJS.Timeout | undefined>();
+
+  const handleChange = useDebouncedCallback(() => {
+    if (!progressLineRef.current) return;
+
+    const newTime = progressLineRef.current.value;
+
+    onRewind(false, Number(newTime));
+  }, 300);
+
+  function onChange() {
+    if (!currentTimeLineRef.current || !progressLineRef.current) return;
+
+    const { value } = progressLineRef.current;
+
+    const newProgress = `${(Number(value) / duration) * 100}%`;
+    currentTimeLineRef.current.style.width = newProgress;
+
+    onRewind(true, currentTime);
+    handleChange();
+  }
 
   useEffect(() => {
-    if (!isPaused) {
-      interval.current = setInterval(() => {
-        if (
-          !player.current ||
-          !progressLineRef.current ||
-          !currentTimeLineRef.current
-        )
-          return;
-        const currentTime = player.current?.currentTime;
+    if (!progressLineRef.current) return;
 
-        progressLineRef.current.value = currentTime.toString();
-
-        const { max, value } = progressLineRef.current;
-
-        currentTimeLineRef.current.style.width = `${
-          (Number(value) / Number(max)) * 100
-        }%`;
-      }, 10);
-
-      return;
-    }
-
-    clearInterval(interval.current ? interval.current : undefined);
-  }, [isPaused]);
-
-  useEffect(() => {
-    const progress = progressLineRef.current;
-    const current = currentTimeLineRef.current;
-    if (!progress || !current) return;
-
-    function onChange() {
-      if (!progress || !current || !player.current) return;
-
-      const { max, value } = progress;
-
-      player.current.currentTime = Number(value);
-
-      current.style.width = `${(Number(value) / Number(max)) * 100}%`;
-    }
-
-    progress.addEventListener("input", onChange);
-  }, []);
+    progressLineRef.current.value = currentTime.toString();
+  }, [currentTime]);
 
   return (
     <div className="flex h-1.5 items-center">
@@ -162,10 +210,12 @@ function AudioProgressBar({ isPaused, player }: AudioProgressBarProps) {
           ref={progressLineRef}
           className="progress "
           type="range"
-          max={player.current?.duration}
+          max={duration}
+          onChange={onChange}
         />
 
         <div
+          style={{ width: `${(currentTime / duration) * 100}%` }}
           ref={currentTimeLineRef}
           className="pointer-events-none absolute h-full select-none rounded-full bg-white"
         />

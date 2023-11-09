@@ -1,6 +1,6 @@
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { VariantProps, cva } from "class-variance-authority";
-import { HTMLAttributes } from "react";
+import { ButtonHTMLAttributes, HTMLAttributes } from "react";
 
 const iconButton = cva("focus:ring-gray-light", {
   variants: {
@@ -20,13 +20,18 @@ const iconButton = cva("focus:ring-gray-light", {
       circle: "rounded-full",
     },
   },
-  compoundVariants: [],
+  compoundVariants: [
+    {
+      variant: ["transparent", "white"],
+      className: 'disabled:text-gray-500'
+    },
+  ],
   defaultVariants: { variant: "transparent", size: "default", shape: "circle" },
 });
 
 type BaseIconButtonProps = {
   icon: string;
-} & HTMLAttributes<HTMLButtonElement> &
+} & ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof iconButton>;
 
 export default function BaseIconButton({

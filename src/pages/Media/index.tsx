@@ -2,10 +2,9 @@ import { BaseButton } from "@/components/Base/BaseButton";
 import BaseInput from "@/components/Base/BaseInput";
 import GalleryCard from "@/components/Gallery/GalleryCard";
 import Modal from "@/components/Modal/Modal";
-import { AppFile, FileType } from "@/global";
+import { AppFile } from "@/global";
 import { useToggle } from "@/hooks";
 import { useAppDispatch } from "@/hooks/useStore";
-import { SoundFile, audioPlayerActions } from "@/store/audioPlayerSlice";
 import { mediaViewerActions } from "@/store/mediaViewerSlice";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { useState } from "react";
@@ -39,42 +38,22 @@ const initialFiles: AppFile[] = [
     id: "531",
     dateUploaded: new Date(),
   },
-  {
-    title: "In The House - In A Heartbeat",
-    type: "audio",
-    file: "https://dl2.mp3party.net/online/8866310.mp3",
-    id: "122",
-    artist: "John Murphy",
-    dateUploaded: new Date(),
-  },
 ];
 
 export default function Media() {
   const dispatch = useAppDispatch();
 
-  const [appFiles, _setAppFiles] = useState<(AppFile | SoundFile)[]>(initialFiles);
+  const [appFiles, _setAppFiles] = useState<AppFile[]>(initialFiles);
   const [isFileModal, toggleFileModal] = useToggle(false);
 
   const { toggleMediaViewer, setFiles, setCurrentFileIndex } =
     mediaViewerActions;
-  const { setCurrentIndex, setFiles: setAudioPlayerFiles } = audioPlayerActions;
 
-  function openMediaViewer(idx: number, type: FileType) {
-    if (type === "image" || type === "video") {
-      const files = appFiles.filter((file) => file.type !== 'audio' )
-
-      dispatch(toggleMediaViewer(true));
-      dispatch(setCurrentFileIndex(idx));
-      dispatch(setFiles(appFiles));
-      return;
-    }
-
-    if (type === "audio") {
-      const sounds = appFiles.filter((file) => file.type === "audio");
-
-      dispatch(setAudioPlayerFiles(sounds));
-      dispatch(setCurrentIndex(idx));
-    }
+  function openMediaViewer(idx: number) {
+    dispatch(toggleMediaViewer(true));
+    dispatch(setCurrentFileIndex(idx));
+    dispatch(setFiles(appFiles));
+    return;
   }
   return (
     <div>
@@ -119,7 +98,7 @@ export default function Media() {
               type={file.type}
               imagePreview={file.file}
               title={file.title}
-              onClick={() => openMediaViewer(idx, file.type)}
+              onClick={() => openMediaViewer(idx)}
             />
           );
         })}
