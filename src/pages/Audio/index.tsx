@@ -24,7 +24,7 @@ const initial: SoundFile[] = [
   },
   {
     name: "Город под подошвой",
-    file: "https://dl2.mp3party.net/online/4431333.mp3",
+    file: "https://dl2.mp3party.net/online/3836882.mp3",
     poster: "",
     id: 3,
     artist: "Oxxymiron",
