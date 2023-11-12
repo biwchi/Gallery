@@ -197,7 +197,10 @@ export default function MediaViewerSlide({
                 <img
                   draggable="false"
                   className="max-h-full"
-                  style={{ maxWidth: imageWidth() }}
+                  style={{
+                    maxWidth: imageWidth(),
+                    maxHeight: `${windowSize.height - 160}px`,
+                  }}
                   src={slide.file}
                 />
               )}

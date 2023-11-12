@@ -1,5 +1,6 @@
 import { BaseButton } from "@/components/Base/BaseButton";
 import BaseInput from "@/components/Base/BaseInput";
+import BasePage from "@/components/Base/BasePage";
 import GalleryCard from "@/components/Gallery/GalleryCard";
 import Modal from "@/components/Modal/Modal";
 import { AppFile } from "@/global";
@@ -44,7 +45,6 @@ export default function Media() {
   const dispatch = useAppDispatch();
 
   const [appFiles, _setAppFiles] = useState<AppFile[]>(initialFiles);
-  const [isFileModal, toggleFileModal] = useToggle(false);
 
   const { toggleMediaViewer, setFiles, setCurrentFileIndex } =
     mediaViewerActions;
@@ -56,40 +56,7 @@ export default function Media() {
     return;
   }
   return (
-    <div>
-      <Modal
-        title="Upload files"
-        isModal={isFileModal}
-        toggleModal={toggleFileModal}
-      >
-        <div>
-          <input
-            type="file"
-            id="fileUpload"
-            className="invisible absolute h-0 w-0"
-          />
-          <label
-            htmlFor="fileUpload"
-            className="flex h-32 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-primary"
-          >
-            <Icon className="text-3xl text-primary" icon="ph:file-dashed" />
-          </label>
-        </div>
-      </Modal>
-
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-medium">All media</h1>
-        <BaseButton
-          onClick={() => toggleFileModal()}
-          text="Upload new files"
-          leftIcon="ph:upload"
-        />
-      </div>
-
-      <div className="py-7">
-        <BaseInput placeholder="Search..." />
-      </div>
-
+    <BasePage title='All media'>
       <div className="grid grid-cols-4 gap-4">
         {appFiles.map((file, idx) => {
           return (
@@ -103,6 +70,6 @@ export default function Media() {
           );
         })}
       </div>
-    </div>
+    </BasePage>
   );
 }

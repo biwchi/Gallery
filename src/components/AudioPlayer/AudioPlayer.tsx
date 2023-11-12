@@ -4,9 +4,6 @@ import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
 import {
-  ChangeEvent,
-  Ref,
-  RefObject,
   useEffect,
   useRef,
   useState,
@@ -18,9 +15,8 @@ import {
   selectAudioPlayer,
 } from "@/store/audioPlayerSlice";
 import { twMerge } from "tailwind-merge";
-import { useDebouncedCallback } from "@/hooks/useDebouncedCallback";
 import { getTimeFromSeconds } from "@/utils";
-import { BaseRange } from "../Base/BaseRange ";
+import { BaseRange } from "../Base/BaseRange";
 
 const icon = {
   pause: "line-md:pause-to-play-filled-transition",
@@ -157,7 +153,7 @@ export default function AudioPlayer() {
               duration={playerState.duration}
               currentTime={playerState.currentTime}
               onPressed={(pressed) => {
-                if(isPaused) return
+                if(pressed && isPaused) return
 
                 if (pressed) audioPlayerRef.current?.pause();
                 else audioPlayerRef.current?.play();
@@ -174,7 +170,7 @@ export default function AudioPlayer() {
             </div>
           </div>
 
-          <div className="group relative">
+          <div className="group flex relative">
             <div className="invisible absolute bottom-full h-10 w-full group-hover:visible" />
             <AudioVolume
               playerVolume={audioPlayerRef.current?.volume || 100}
