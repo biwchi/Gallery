@@ -36,7 +36,7 @@ export class AuthService {
 
   private async validateUser(dto: UserSignInDto) {
     const user = await this.userService.findOneByEmail(dto.email);
-
+    console.log(user)
     if (!user) {
       throw new UnauthorizedException('Bad credentials');
     }

@@ -9,6 +9,7 @@ import { PasswordService } from './services/password.service';
 import { AuthController } from './contorllers/auth.controller';
 import { UserController } from './contorllers/user.controller';
 import { AuthService } from './services/auth.service';
+import { AccessTokenStrategy } from './strategies/access-token.strategy';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { AuthService } from './services/auth.service';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [AuthController, UserController],
-  providers: [UserService, PasswordService, AuthService],
+  providers: [UserService, PasswordService, AuthService, AccessTokenStrategy],
   exports: [JwtModule],
 })
 export class UserModule {}

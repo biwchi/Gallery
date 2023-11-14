@@ -25,7 +25,9 @@ function buildSwaggerDocs(app: NestApplication, prefix: string) {
   const config = new DocumentBuilder()
     .setTitle('Gallery')
     .setDescription('Application for storing and using media files')
-    .addBasicAuth({ in: 'header', type: 'http', bearerFormat: 'JWT' })
+    .setBasePath('api')
+    .addBasicAuth({ type: 'http', in: 'header', bearerFormat: 'JWT' })
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

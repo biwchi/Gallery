@@ -29,14 +29,14 @@ function buildDataSource(
 
 export function dataSourceFactory(configService: ConfigService) {
   return buildDataSource(configService, {
-    entities: ['dist/**/*.entity{.ts,.js}'],
+    entities: ['dist/**/*.entity.js'],
     logging: true,
   });
 }
 
 export function dataSourceTestFactory(configService: ConfigService) {
   return buildDataSource(configService, {
-    entities: ['src/**/*.entity{.ts,.js}'],
+    entities: ['dist/**/*.entity.js'],
     logging: false,
   });
 }

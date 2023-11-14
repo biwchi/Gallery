@@ -4,10 +4,12 @@ import {
   HttpCode,
   Post,
   Req,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import {
+  ApiBasicAuth,
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
@@ -18,9 +20,11 @@ import { TokenInfoDto } from '../dto/token/token-info.dto.';
 import { TokenDto } from '../dto/token/token.dto';
 import { UserCreateDto } from '../dto/user/user.create.dto';
 import { UserSignInDto } from '../dto/user/user.sign-in.dto';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
 
 @Controller('user/auth')
 @ApiTags('User authentification')
+@ApiBasicAuth()
 @ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -36,10 +40,6 @@ export class AuthController {
     description: 'Bearer token',
     status: 200,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request',
-  })
   public async login(@Body() dto: UserSignInDto): Promise<TokenDto> {
     return await this.authService.login(dto);
   }
@@ -54,10 +54,6 @@ export class AuthController {
     description: 'Bearer token',
     status: 201,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request',
-  })
   public async registration(@Body() dto: UserCreateDto): Promise<TokenDto> {
     return await this.authService.register(dto);
   }
@@ -65,6 +61,7 @@ export class AuthController {
   @Post('/profile')
   @HttpCode(200)
   @UsePipes(new ValidationPipe())
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Information about current user',
   })
@@ -72,10 +69,6 @@ export class AuthController {
     type: TokenInfoDto,
     description: 'Bearer token',
     status: 200,
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
   })
   public whois(@Req() request: Request): TokenInfoDto {
     return new TokenInfoDto(request['user'].id, request['user'].email);

@@ -17,22 +17,21 @@ export class Init1677233529112 implements MigrationInterface {
 				"id" SERIAL NOT NULL, 
 				"email" character varying(200) NOT NULL, 
 				"password" character varying(200) NOT NULL, 
-				"role" character varying(32) NOT NULL, 
 				"name" character varying(300) NOT NULL, 
 				CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")
 			)`,
     );
 
     await queryRunner.query(
-      `INSERT INTO usr."user" (email, "password", "role", "name")
+      `INSERT INTO usr."user" (email, "password", "name")
 			VALUES 
-			('root@gmail.com', '${this.encryptPassword('root')}', 'ROOT', 'Root');`,
+			('root@gmail.com', '${this.encryptPassword('root')}', 'Root');`,
     );
 
     await queryRunner.query(
-      `INSERT INTO usr."user" (email, "password", "role", "name")
+      `INSERT INTO usr."user" (email, "password", "name")
 			VALUES 
-			('user@gmail.com', '${this.encryptPassword('user')}', 'USER', 'User');`,
+			('user@gmail.com', '${this.encryptPassword('user')}', 'User');`,
     );
   }
 
