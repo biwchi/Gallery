@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
   UsePipes,
@@ -16,12 +17,13 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteDto } from 'src/utils/delete.dto';
 import { UserCreateDto } from '../dto/user/user.create.dto';
 import { UserUpdateDto } from '../dto/user/user.update.dto';
+import { User } from '../entities/user.entity';
 
 @Controller('user')
 @ApiTags('Working with users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  
+
   @Get()
   @ApiOperation({
     summary: 'Get User list',
@@ -40,10 +42,11 @@ export class UserController {
 
   @Get(':id')
   @ApiOperation({
-    summary: 'Get user card by its ID',
+    summary: 'Get user by id',
   })
   @ApiResponse({
-    description: 'User card',
+    type: User,
+    description: 'Return user object',
     status: 200,
   })
   @ApiResponse({
@@ -65,28 +68,7 @@ export class UserController {
     throw new BadRequestException();
   }
 
-  @Post()
-  @UsePipes(new ValidationPipe())
-  @ApiOperation({
-    summary: 'Create a superuser (for current superusers only)',
-  })
-  @ApiResponse({
-    description: 'New superuser ID',
-    status: 201,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden',
-  })
-  public async create(@Body() dto: UserCreateDto) {
-    return await this.userService.create(dto);
-  }
-
-  @Put(':id')
+  @Patch(':id')
   @UsePipes(new ValidationPipe())
   @ApiOperation({
     summary: 'User update',
@@ -109,14 +91,14 @@ export class UserController {
     description: 'Not found',
   })
   public async update(@Param('id') id: number, @Body() dto: UserUpdateDto) {
-    return await this.userService.update(id, dto);
+    await this.userService.update(id, dto);
   }
 
   @Delete()
   @HttpCode(204)
   @UsePipes(new ValidationPipe())
   @ApiOperation({
-    summary: 'Users` delete',
+    summary: 'Users delete',
   })
   @ApiResponse({
     description: 'Users was deleted',

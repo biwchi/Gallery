@@ -11,4 +11,7 @@ export class TokenInfoDto {
 
 	@ApiProperty({ description: 'User Email', example: 'john@doe.com' })
 	email: string;
+
+	@ApiProperty({description: "User name", example: 'John doe'}) 
+	name: string
 }

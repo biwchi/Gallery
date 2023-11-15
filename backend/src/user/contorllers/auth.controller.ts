@@ -21,10 +21,12 @@ import { TokenDto } from '../dto/token/token.dto';
 import { UserCreateDto } from '../dto/user/user.create.dto';
 import { UserSignInDto } from '../dto/user/user.sign-in.dto';
 import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { ExtractUser } from '../decorators/user.decoratr';
+import { RefreshTokenDto } from '../dto/token/refresh-token.dto';
+import { AccessToken } from '../dto/token/asccess-token.dto';
 
 @Controller('user/auth')
 @ApiTags('User authentification')
-@ApiBasicAuth()
 @ApiBearerAuth()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -70,7 +72,19 @@ export class AuthController {
     description: 'Bearer token',
     status: 200,
   })
-  public whois(@Req() request: Request): TokenInfoDto {
-    return new TokenInfoDto(request['user'].id, request['user'].email);
+  public whois(@ExtractUser() user: TokenInfoDto): TokenInfoDto {
+    return user;
+  }
+
+  @Post('/refresh')
+  @UsePipes(new ValidationPipe())
+  @ApiOperation({ summary: "Refresh user's token" })
+  @ApiResponse({
+    type: TokenDto,
+    description: 'Get new tokens',
+    status: 200,
+  })
+  public async refreshToken(@Body() refresh: RefreshTokenDto) {
+    return await this.authService.refreshToken(refresh.refreshToken)
   }
 }

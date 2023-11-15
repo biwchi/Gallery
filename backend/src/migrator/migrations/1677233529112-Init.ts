@@ -18,6 +18,7 @@ export class Init1677233529112 implements MigrationInterface {
 				"email" character varying(200) NOT NULL, 
 				"password" character varying(200) NOT NULL, 
 				"name" character varying(300) NOT NULL, 
+        "refresh_token" character varying(400),
 				CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")
 			)`,
     );

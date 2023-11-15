@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { ArrayNotEmpty, IsNumber } from 'class-validator';
 
 export class DeleteDto {
   @ApiProperty({
@@ -8,6 +8,7 @@ export class DeleteDto {
     type: Number,
     isArray: true,
   })
+  @ArrayNotEmpty()
   @IsNumber({}, { each: true, message: 'Should be number' })
   ids: number[];
 }
