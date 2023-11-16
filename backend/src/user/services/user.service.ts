@@ -10,16 +10,18 @@ import { UserCreateDto } from '../dto/user/user.create.dto';
 import { PasswordService } from './password.service';
 import { DeleteDto } from 'src/utils/delete.dto';
 import { UserUpdateDto } from '../dto/user/user.update.dto';
+import { UserMapper } from '../mappers/user.mapper';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly passwordService: PasswordService,
+    private readonly userMapper: UserMapper,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
   public async findAll() {
-    return await this.userRepository.find();
+    return (await this.userRepository.find()).map(this.userMapper.toItemDto);
   }
 
   public async findOneById(id: number) {
@@ -27,13 +29,13 @@ export class UserService {
 
     if (!user) throw new NotFoundException();
 
-    return user;
+    return this.userMapper.toItemDto(user);
   }
 
   public async findOneByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
   }
-  
+
   public async create(dto: UserCreateDto) {
     const isUserExist = await this.userRepository.findOneBy({
       email: dto.email,

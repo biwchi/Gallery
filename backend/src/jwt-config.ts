@@ -5,7 +5,7 @@ export const jwtConfig = (configService: ConfigService): JwtModuleOptions => {
 	return {
 		secret: configService.get<string>('PRIVATE_KEY') || 'SECRET',
 		signOptions: {
-			expiresIn: '48h'
+			expiresIn: '1h'
 		}
 	};
 };

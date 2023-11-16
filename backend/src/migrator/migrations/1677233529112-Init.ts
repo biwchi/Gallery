@@ -28,12 +28,6 @@ export class Init1677233529112 implements MigrationInterface {
 			VALUES 
 			('root@gmail.com', '${this.encryptPassword('root')}', 'Root');`,
     );
-
-    await queryRunner.query(
-      `INSERT INTO usr."user" (email, "password", "name")
-			VALUES 
-			('user@gmail.com', '${this.encryptPassword('user')}', 'User');`,
-    );
   }
 
   public async down(queryRunner: QueryRunner) {

@@ -1,20 +1,14 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from './password.service';
 import { UserService } from './user.service';
 import { UserCreateDto } from '../dto/user/user.create.dto';
 import { UserSignInDto } from '../dto/user/user.sign-in.dto';
-import { User } from '../entities/user.entity';
 import { TokenDto } from '../dto/token/token.dto';
 import * as CryptoJs from 'crypto-js';
 import { ConfigService } from '@nestjs/config';
-import { RefreshTokenDto } from '../dto/token/refresh-token.dto';
 import { UserRequestData } from 'src/global/types';
-import { TokenInfoDto } from '../dto/token/token-info.dto.';
+import { TokenInfoDto } from '../dto/token/token-info.dto';
 
 @Injectable()
 export class AuthService {
@@ -45,26 +39,18 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException('Invalid token');
 
-    const tokens = this.generateTokens({
-      email: decodedToken.email,
-      id: decodedToken.id,
-      name: decodedToken.name,
-    });
-
+    const tokens = this.generateTokens(user);
     this.updateUserResfreshToken(user.id, tokens.refreshToken);
 
-    return tokens
+    return tokens;
   }
 
   private generateTokens(user: TokenInfoDto): TokenDto {
-    const accessToken = this.jwtService.sign(
-      {
-        email: user.email,
-        id: user.id,
-        name: user.name,
-      },
-      { expiresIn: '1h' },
-    );
+    const accessToken = this.jwtService.sign({
+      email: user.email,
+      id: user.id,
+      name: user.name,
+    });
     const refreshToken = this.jwtService.sign(
       {
         email: user.email,

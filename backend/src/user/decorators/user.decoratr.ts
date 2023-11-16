@@ -10,7 +10,6 @@ export const ExtractUser = createParamDecorator(
   (_data: unknown, ctx: ExecutionContextHost) => {
     const jwtService = new JwtService({
       secret: process.env.PRIVATE_KEY,
-      signOptions: { expiresIn: '48h' },
     });
     const req = ctx.switchToHttp().getRequest();
     const authHeader = req.headers.authorization;
@@ -29,7 +28,7 @@ export const ExtractUser = createParamDecorator(
 
         return user;
       } catch (error) {
-        throw new UnauthorizedException();
+        return undefined
       }
     }
   },

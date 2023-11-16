@@ -26,7 +26,6 @@ function buildSwaggerDocs(app: NestApplication, prefix: string) {
     .setTitle('Gallery')
     .setDescription('Application for storing and using media files')
     .setBasePath('api')
-    .addBasicAuth({ type: 'http', in: 'header', bearerFormat: 'JWT' })
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .build();
 
@@ -59,9 +58,9 @@ async function bootstrap() {
 }
 
 bootstrap().then(() => {
-  Logger.log(`Application started on port ${appPort}`, 'main');
+  Logger.log(`Application started on port ${appPort}`, 'Main');
   Logger.log(
     `API Documentation: http://localhost:${appPort}/${docsPrefix}`,
-    'main',
+    'Main',
   );
 });
