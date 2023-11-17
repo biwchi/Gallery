@@ -1,40 +1,57 @@
 import {
   Controller,
   FileTypeValidator,
+  Get,
   Logger,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
-  UploadedFile,
+  StreamableFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
-import { multerConfig } from 'src/multer-config';
+import { FilesUploadInterceptor } from './file-upload.interceptor';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Controller('file')
 @ApiTags('Working with files')
 export class FileController {
   /**
+   * Get files
+   */
+  @Get()
+  getFiles(@Param(':fileName') name: string) {
+    const file = createReadStream(join(process.cwd(), 'package.json'));
+    return new StreamableFile(file);
+  }
+
+  /**
    * Upload files
    */
   @Post()
-  @UseInterceptors(FileInterceptor('file', multerConfig()))
+  @UseInterceptors(
+    FilesUploadInterceptor({ fieldName: 'files', path: 'bebra', maxCount: 5 }),
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
         },
       },
     },
   })
   public upload(
-    @UploadedFile(
-      'file',
+    @UploadedFiles(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1000 * 1024 }),
@@ -42,10 +59,12 @@ export class FileController {
         ],
       }),
     )
-    file: Express.Multer.File,
+    files: Express.Multer.File[],
   ): void {
     Logger.log(
-      `File ${file.filename} was successfully uploaded`,
+      `Files ${files
+        .map((file) => file.filename)
+        .join(' ')} was successfully uploaded`,
       this.constructor.name,
     );
   }
