@@ -5,6 +5,7 @@ import { dataSourceTestFactory } from './data-sourse-factory';
 import { FileController } from './file/file.controller';
 import { FileModule } from './file/file.module';
 import { UserModule } from './user/user.module';
+import { GalleryModule } from './gallery/gallery.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     }),
     FileModule,
     UserModule,
+    GalleryModule,
   ],
   controllers: [FileController],
 })

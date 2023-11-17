@@ -8,13 +8,18 @@ import {
   ParseFilePipe,
   Post,
   StreamableFile,
+  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
-import { FilesUploadInterceptor } from './file-upload.interceptor';
+import {
+  FileUploadInterceptor,
+  FilesUploadInterceptor,
+} from './file-upload.interceptor';
 import { createReadStream } from 'fs';
 import { join } from 'path';
+import { CompressionMiddleware } from './middlewares/compression.middleware';
 
 @Controller('file')
 @ApiTags('Working with files')
@@ -33,25 +38,24 @@ export class FileController {
    */
   @Post()
   @UseInterceptors(
-    FilesUploadInterceptor({ fieldName: 'files', path: 'bebra', maxCount: 5 }),
+    CompressionMiddleware,
+    FileUploadInterceptor({ fieldName: 'file' }),
   )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        files: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
+        file: {
+          type: 'string',
+          format: 'binary',
         },
       },
     },
   })
   public upload(
-    @UploadedFiles(
+    @UploadedFile(
+      'file',
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1000 * 1024 }),
@@ -59,13 +63,8 @@ export class FileController {
         ],
       }),
     )
-    files: Express.Multer.File[],
+    file: Express.Multer.File,
   ): void {
-    Logger.log(
-      `Files ${files
-        .map((file) => file.filename)
-        .join(' ')} was successfully uploaded`,
-      this.constructor.name,
-    );
+    file.originalname;
   }
 }
