@@ -7,19 +7,16 @@ import {
   Param,
   ParseFilePipe,
   Post,
+  Res,
   StreamableFile,
   UploadedFile,
-  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
-import {
-  FileUploadInterceptor,
-  FilesUploadInterceptor,
-} from './file-upload.interceptor';
+import { FileUploadInterceptor } from './file-upload.interceptor';
 import { createReadStream } from 'fs';
 import { join } from 'path';
-import { CompressionMiddleware } from './middlewares/compression.middleware';
+import { Response } from 'express';
 
 @Controller('file')
 @ApiTags('Working with files')
@@ -27,20 +24,17 @@ export class FileController {
   /**
    * Get files
    */
-  @Get()
-  getFiles(@Param(':fileName') name: string) {
-    const file = createReadStream(join(process.cwd(), 'package.json'));
-    return new StreamableFile(file);
+  @Get('/:fileName')
+  getFile(@Param('fileName') name: string, @Res() res: Response) {
+    const rootPath = join(__dirname, '..', 'uploads');
+    res.sendFile(name, { root: rootPath });
   }
 
   /**
    * Upload files
    */
   @Post()
-  @UseInterceptors(
-    CompressionMiddleware,
-    FileUploadInterceptor({ fieldName: 'file' }),
-  )
+  @UseInterceptors(FileUploadInterceptor({ fieldName: 'file' }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -54,17 +48,9 @@ export class FileController {
     },
   })
   public upload(
-    @UploadedFile(
-      'file',
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 1000 * 1024 }),
-          new FileTypeValidator({ fileType: 'image/png' }),
-        ],
-      }),
-    )
+    @UploadedFile()
     file: Express.Multer.File,
   ): void {
-    file.originalname;
+    Logger.log(file.filename);
   }
 }

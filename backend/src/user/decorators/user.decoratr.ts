@@ -1,4 +1,4 @@
-import { UnauthorizedException, createParamDecorator } from '@nestjs/common';
+import { createParamDecorator } from '@nestjs/common';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';

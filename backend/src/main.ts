@@ -50,6 +50,8 @@ async function bootstrap() {
     next();
   });
 
+  app.useStaticAssets('uploads');
+
   createUploadsDir(configService.get('FILE_STORAGE'));
 
   appPort = configService.get<number>('PORT');

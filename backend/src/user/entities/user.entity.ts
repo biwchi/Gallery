@@ -8,12 +8,12 @@ export class User {
   @Column({ type: 'varchar', length: 200 })
   email: string;
 
-  @Column({ type: 'varchar', length: 200 })
+  @Column({ select: false, type: 'varchar', length: 200 })
   password: string;
 
   @Column({ type: 'varchar', length: 300 })
   name: string;
 
-  @Column({ nullable: true, type: 'varchar', length: 400})
-  refresh_token: string
+  @Column({ select: false, nullable: true, type: 'varchar', length: 400 })
+  refresh_token: string;
 }
