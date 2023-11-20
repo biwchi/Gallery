@@ -3,17 +3,18 @@ import {
   Get,
   Logger,
   Post,
+  Query,
   Req,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import {
-  FileUploadInterceptor,
-  FilesUploadInterceptor,
-} from 'src/file/file-upload.interceptor';
+import { FilesUploadInterceptor } from 'src/file/file-upload.interceptor';
 import { GalleryService } from '../services/gallery.service';
 import { Request } from 'express';
+import { AppQueryDto } from 'src/shared/dto/app-query.dto';
+import { FileDto } from '../dto/file.dto';
+import { ApiGenericResponse } from 'src/shared/swagger/generic-response';
 
 @Controller('gallery')
 @ApiTags('Working with projects files')
@@ -24,8 +25,9 @@ export class GalleryController {
    * Get files list of any type
    */
   @Get()
-  public getFiles(@Req() req: Request) {
-    return this.galleryService.getAllFiles(req);
+  @ApiGenericResponse(FileDto)
+  public getFiles(@Query() query: AppQueryDto, @Req() req: Request) {
+    return this.galleryService.getAllFiles(req, query);
   }
 
   /**
@@ -49,7 +51,6 @@ export class GalleryController {
     },
   })
   public postManyFiles(@UploadedFiles() files: Express.Multer.File[]) {
-    this.galleryService.createFiles(files)
-    Logger.log('Files created')
+    this.galleryService.createFiles(files);
   }
 }

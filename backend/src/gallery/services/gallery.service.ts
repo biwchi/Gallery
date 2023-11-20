@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { AppFile } from '../enities/file.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileMapper } from '../mappers/file.mapper';
 import { Request } from 'express';
+import { AppQueryDto } from 'src/shared/dto/app-query.dto';
+import { AppResponseDto } from 'src/shared/dto/app-response.dto';
 
 @Injectable()
 export class GalleryService {
@@ -13,9 +15,18 @@ export class GalleryService {
     private readonly fileRepository: Repository<AppFile>,
   ) {}
 
-  public async getAllFiles(req: Request) {
-    const files = await this.fileRepository.find();
-    return files.map((file) => this.fileMapper.fileEntityToDto(file, req));
+  public async getAllFiles(req: Request, query: AppQueryDto) {
+    const [files, itemCount] = await this.fileRepository.findAndCount({
+      skip: query.offset,
+      take: query.limit,
+      where: { title: query.search && Like(`%${query.search}%`) },
+    });
+
+    const result = files.map((file) =>
+      this.fileMapper.fileEntityToDto(file, req),
+    );
+
+    return new AppResponseDto(itemCount, result, query);
   }
 
   public async createFiles(files: Express.Multer.File[]) {

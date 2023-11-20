@@ -7,7 +7,7 @@ import { UserSignInDto } from '../dto/user/user.sign-in.dto';
 import { TokenDto } from '../dto/token/token.dto';
 import * as CryptoJs from 'crypto-js';
 import { ConfigService } from '@nestjs/config';
-import { UserRequestData } from 'src/global/types';
+import { UserRequestData } from 'src/shared/types/types';
 import { TokenInfoDto } from '../dto/token/token-info.dto';
 
 @Injectable()

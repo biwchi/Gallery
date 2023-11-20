@@ -2,7 +2,7 @@ import { createParamDecorator } from '@nestjs/common';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { JwtService } from '@nestjs/jwt';
 import { config } from 'dotenv';
-import { UserRequestData } from 'src/global/types';
+import { UserRequestData } from 'src/shared/types/types';
 
 config();
 

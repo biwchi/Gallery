@@ -7,6 +7,7 @@ import * as path from 'path';
 
 import * as fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppQueryInterceptor } from './shared/interceptors/app-query.interceptor';
 
 let appPort: number;
 
@@ -51,6 +52,7 @@ async function bootstrap() {
   });
 
   app.useStaticAssets('uploads');
+  app.useGlobalInterceptors(new AppQueryInterceptor());
 
   createUploadsDir(configService.get('FILE_STORAGE'));
 
