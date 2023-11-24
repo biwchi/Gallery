@@ -48,7 +48,7 @@ export default function Modal({
             >
               {!noHeader && (
                 <div className="flex items-center justify-between">
-                  <h1>{title}</h1>
+                  <h1 className='text-xl'>{title}</h1>
 
                   <BaseIconButton onClick={handleClose} icon="ph:x" />
                 </div>

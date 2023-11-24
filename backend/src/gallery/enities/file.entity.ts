@@ -1,6 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { FileType } from '../common/enums';
-import { parse } from 'path';
 
 @Entity({ schema: 'gallery' })
 export class AppFile {
@@ -8,7 +12,7 @@ export class AppFile {
   id: number;
 
   @Column()
-  title: string
+  title: string;
 
   @Column()
   fileName: string;
@@ -21,6 +25,9 @@ export class AppFile {
 
   @Column({ type: 'varchar', length: 20 })
   mimeType: string;
+
+  @CreateDateColumn()
+  dateUploaded: Date;
 
   getType(): FileType {
     if (this.mimeType.startsWith('image')) return FileType.IMAGE;

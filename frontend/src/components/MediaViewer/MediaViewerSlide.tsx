@@ -6,12 +6,11 @@ import {
   mediaViewerActions,
   selectMediaViewer,
 } from "@/store/mediaViewerSlice";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 type MediaViewerSlideProps = {
   slide: Slide;
-  type?: "prev" | "active" | "next";
 };
 
 type Position = { x: number; y: number; lastX: number; lastY: number };
@@ -29,10 +28,7 @@ const initialPosition = {
   lastY: 0,
 };
 
-export default function MediaViewerSlide({
-  slide,
-  type = "active",
-}: MediaViewerSlideProps) {
+export default function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
   const mediaViewer = useAppSelector(selectMediaViewer);
   const dispatch = useAppDispatch();
 
@@ -44,7 +40,7 @@ export default function MediaViewerSlide({
   const zoomTransitionDuration = 150;
 
   const { zoom, isMoveable } = mediaViewer;
-  const { toggleMediaViewer, setFiles, toggleMoveable } = mediaViewerActions;
+  const { toggleMoveable } = mediaViewerActions;
   const { breakpoint, windowSize } = useBreakpoints();
 
   const checkMoveable = () => {
@@ -82,30 +78,12 @@ export default function MediaViewerSlide({
       deltaPosition.current.lastY /= zoom;
     }
 
-    if (type === "active")
-      return {
-        transform: `translate3d(${deltaPosition.current.lastX}px, ${deltaPosition.current.lastY}px, 0) scale(${zoom})`,
-      };
-
-    if (type === "prev")
-      return {
-        transform: `translate3d(-${windowSize.width}px, 0, 0) scale(1)`,
-      };
-
-    if (type === "next")
-      return {
-        transform: `translate3d(${windowSize.width}px, 0, 0) scale(1)`,
-      };
-  }
-
-  function closeViewer() {
-    dispatch(toggleMediaViewer(false));
-    dispatch(setFiles([]));
+    return {
+      transform: `translate3d(${deltaPosition.current.lastX}px, ${deltaPosition.current.lastY}px, 0) scale(${zoom})`,
+    };
   }
 
   useEffect(() => {
-    if (type !== "active") return;
-
     setTimeout(() => {
       const checkForMoveable = checkMoveable();
       const toString = JSON.stringify;
@@ -201,7 +179,7 @@ export default function MediaViewerSlide({
                     maxWidth: imageWidth(),
                     maxHeight: `${windowSize.height - 160}px`,
                   }}
-                  src={slide.file}
+                  src={slide.fileUrl}
                 />
               )}
               {slide.type === "video" && (

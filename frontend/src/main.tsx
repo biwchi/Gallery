@@ -1,7 +1,7 @@
-import "@/index.css";
+import "@/assets/css/index.css";
 
 import ReactDOM from "react-dom/client";
-import App from "@/App.tsx";
+import App from "@/App";
 import MediaViewer from "@/components/MediaViewer/MediaViewer";
 import store from "@/store/index.ts";
 

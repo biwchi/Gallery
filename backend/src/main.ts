@@ -51,6 +51,7 @@ async function bootstrap() {
     next();
   });
 
+
   app.useStaticAssets('uploads');
   app.useGlobalInterceptors(new AppQueryInterceptor());
 

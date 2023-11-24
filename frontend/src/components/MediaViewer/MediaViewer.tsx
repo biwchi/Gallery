@@ -13,21 +13,15 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { twMerge } from "tailwind-merge";
-import { AppFile } from "@/global";
+import { AppFile } from "@/services/types";
 
 export type Slide = AppFile | undefined;
-
-type Slides = {
-  prev: Slide;
-  active: Slide;
-  next: Slide;
-};
 
 export default function MediaViewer() {
   const mediaViewer = useAppSelector(selectMediaViewer);
   const dispatch = useAppDispatch();
 
-  const [slides, setSlides] = useState<Slides | null>(null);
+  const [slide, setSlide] = useState<Slide | null>(null);
   const [state, toggle] = useTransition({
     timeout: 300,
     preEnter: true,
@@ -55,11 +49,7 @@ export default function MediaViewer() {
   const slidePrev = () => dispatch(currentFileIndexDecrement());
 
   function slidesUpdate() {
-    return setSlides({
-      prev: files[currentFileIndex - 1],
-      active: files[currentFileIndex],
-      next: files[currentFileIndex + 1],
-    });
+    return setSlide(files[currentFileIndex]);
   }
 
   function keyboardEvents(e: KeyboardEvent) {
@@ -95,7 +85,7 @@ export default function MediaViewer() {
 
   return (
     <>
-      {state.isMounted && slides && (
+      {state.isMounted && slide && (
         <ReactPortal wrapperId="mediaViewer">
           <div
             className={twMerge(
@@ -104,7 +94,7 @@ export default function MediaViewer() {
             )}
           >
             <div className="to-black/05 relative z-50 flex items-center justify-between bg-gradient-to-b from-black p-5">
-              <h1>{slides.active?.title}</h1>
+              <h1>{slide.title}</h1>
 
               <div className="flex gap-2">
                 <BaseIconButton icon="ph:download-simple" />
@@ -131,9 +121,7 @@ export default function MediaViewer() {
               </>
             )}
 
-            {/* <MediaViewerSlide type="prev" slide={slides.prev} /> */}
-            <MediaViewerSlide slide={slides.active} />
-            {/* <MediaViewerSlide type="next" slide={slides.next} /> */}
+            <MediaViewerSlide slide={slide} />
           </div>
         </ReactPortal>
       )}

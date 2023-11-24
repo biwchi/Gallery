@@ -1,50 +1,14 @@
-import { BaseButton } from "@/components/Base/BaseButton";
-import BaseInput from "@/components/Base/BaseInput";
-import BasePage from "@/components/Base/BasePage";
+import BaseLayout from "@/layouts/BaseLayout";
 import GalleryCard from "@/components/Gallery/GalleryCard";
+
 import { useAppDispatch } from "@/hooks";
 import { SoundFile, audioPlayerActions } from "@/store/audioPlayerSlice";
 import { useState } from "react";
 
-const initial: SoundFile[] = [
-  {
-    name: "Back in Black",
-    file: "./public/sounds/Back in Black - Back in Black.mp3",
-    poster: "",
-    id: 1,
-    artist: "Back in Black",
-    dateUploaded: new Date(),
-  },
-  {
-    name: "In The House - In A Heartbeat",
-    file: "https://dl2.mp3party.net/online/8866310.mp3",
-    poster: "",
-    id: 2,
-    artist: "John Murphy",
-    dateUploaded: new Date(),
-  },
-  {
-    name: "За деньги да",
-    file: "https://dl2.mp3party.net/online/10663071.mp3",
-    poster: "",
-    id: 4,
-    artist: "InstaSamka",
-    dateUploaded: new Date(),
-  },
-  {
-    name: "Город под подошвой",
-    file: "https://dl2.mp3party.net/online/3836882.mp3",
-    poster: "",
-    id: 3,
-    artist: "Oxxymiron",
-    dateUploaded: new Date(),
-  },
-];
-
 export default function Audios() {
   const dispatch = useAppDispatch();
 
-  const [sounds, setSounds] = useState<SoundFile[]>(initial);
+  const [sounds, _] = useState<SoundFile[]>([]);
 
   const { setCurrentIndex, setFiles } = audioPlayerActions;
 
@@ -54,7 +18,7 @@ export default function Audios() {
   }
 
   return (
-    <BasePage title="Audios">
+    <BaseLayout title="Audios">
       <div className="grid grid-cols-4 gap-4">
         {sounds.map((file, idx) => {
           return (
@@ -62,12 +26,13 @@ export default function Audios() {
               key={idx}
               type={"audio"}
               title={file.name}
+              dateUploaded={file.dateUploaded}
               imagePreview={"file.poster"}
               onClick={() => playSound(idx)}
             />
           );
         })}
       </div>
-    </BasePage>
+    </BaseLayout>
   );
 }

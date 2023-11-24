@@ -1,4 +1,4 @@
-import { AppFile } from "@/global";
+import { AppFile } from "@/services/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from ".";
 

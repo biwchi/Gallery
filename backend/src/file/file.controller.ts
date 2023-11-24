@@ -1,14 +1,10 @@
 import {
   Controller,
-  FileTypeValidator,
   Get,
   Logger,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   Post,
   Res,
-  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -34,7 +30,10 @@ export class FileController {
    * Upload files
    */
   @Post()
-  @UseInterceptors(FileUploadInterceptor({ fieldName: 'file' }))
+  @UseInterceptors(FileUploadInterceptor({ fieldName: 'file', fileFilter(req, file, callback) {
+      file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf-8')
+      callback(null, true)
+  }, }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {

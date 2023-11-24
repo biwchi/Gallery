@@ -1,18 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from ".";
-
-export type SoundFile = {
-  id: number;
-  file: string;
-  name: string;
-  artist: string | null;
-  poster: string | null;
-  dateUploaded: Date;
-};
+import { AppFile } from '@/services/types';
 
 export type AudioPlayer = {
-  files: SoundFile[];
-  currentSound: SoundFile;
+  files: AppFile[];
+  currentSound: AppFile;
   currentIndex: number;
   hasNext: boolean,
   hasPrev: boolean
@@ -21,12 +13,14 @@ export type AudioPlayer = {
 const initialState: AudioPlayer = {
   files: [],
   currentSound: {
-    id: 0,
-    name: "",
-    file: "",
-    poster: null,
-    artist: null,
-    dateUploaded: new Date(),
+    id: number;
+    title: string;
+    fileName: 'string';
+    type: 'audio';
+    size: 0;
+    fileUrl: '';
+    dateUploaded: '';
+
   },
   currentIndex: -1,
   hasNext: false,

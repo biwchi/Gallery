@@ -3,16 +3,13 @@ import "./AudioPlayer.css";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useToggle } from "@/hooks";
 import { useSelector } from "react-redux";
 import {
   audioPlayerActions,
   selectAudioPlayer,
+  selectCurrentSound,
 } from "@/store/audioPlayerSlice";
 import { twMerge } from "tailwind-merge";
 import { getTimeFromSeconds } from "@/utils";
@@ -35,10 +32,11 @@ export default function AudioPlayer() {
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const interval = useRef<NodeJS.Timeout | undefined>();
 
+  const currentSound = useSelector(selectCurrentSound);
   const audioPlayer = useSelector(selectAudioPlayer);
   const dispatch = useAppDispatch();
 
-  const { files, currentSound, hasNext, hasPrev } = audioPlayer;
+  const { files, currentIndex } = audioPlayer;
   const { incrementIndex, decrementIndex, setFiles } = audioPlayerActions;
 
   const [isPaused, togglePaused] = useToggle(true);
@@ -87,7 +85,7 @@ export default function AudioPlayer() {
     if (!audioPlayerRef.current) return;
     setPlayerState(initialPlayerState);
     audioPlayerRef.current.play();
-  }, [currentSound]);
+  }, [currentIndex]);
 
   return (
     <ReactPortal wrapperId="audioPlayer">
@@ -101,7 +99,7 @@ export default function AudioPlayer() {
       >
         <audio
           ref={audioPlayerRef}
-          src={currentSound.file}
+          src={currentSound.fileUrl}
           onError={() => dispatch(setFiles([]))}
           onLoadStart={() => toggleLoading(true)}
           onLoadedData={() => toggleLoading(false)}
@@ -112,7 +110,6 @@ export default function AudioPlayer() {
         <div className="flex items-center gap-4 rounded-full bg-black px-5 py-2.5 shadow-xl">
           <div className="flex text-2xl">
             <BaseIconButton
-              // disabled={!hasPrev}
               variant={"white"}
               size={"bigIcon"}
               icon="material-symbols:skip-previous-rounded"
@@ -125,7 +122,6 @@ export default function AudioPlayer() {
               icon={isPaused ? icon.pause : icon.play}
             />
             <BaseIconButton
-              // disabled={!hasNext}
               variant={"white"}
               size={"bigIcon"}
               icon="material-symbols:skip-next-rounded"
@@ -145,7 +141,10 @@ export default function AudioPlayer() {
               {currentSound.artist && (
                 <span className="text-gray-light">{currentSound.artist} -</span>
               )}
-              <span className="font-medium"> {currentSound.name}</span>
+              <span className="font-medium">
+                {" "}
+                {currentSound.songName || currentSound.title.split(".")[0]}
+              </span>
             </p>
 
             <AudioProgressBar
@@ -153,7 +152,7 @@ export default function AudioPlayer() {
               duration={playerState.duration}
               currentTime={playerState.currentTime}
               onPressed={(pressed) => {
-                if(pressed && isPaused) return
+                if (pressed && isPaused) return;
 
                 if (pressed) audioPlayerRef.current?.pause();
                 else audioPlayerRef.current?.play();
@@ -170,7 +169,7 @@ export default function AudioPlayer() {
             </div>
           </div>
 
-          <div className="group flex relative">
+          <div className="group relative flex">
             <div className="invisible absolute bottom-full h-10 w-full group-hover:visible" />
             <AudioVolume
               playerVolume={audioPlayerRef.current?.volume || 100}

@@ -2,16 +2,28 @@ import { IsOptional, MaxLength } from 'class-validator';
 import { FileType } from '../common/enums';
 import { AppFile } from '../enities/file.entity';
 import { getViewUrl } from 'src/utils';
+import { IsNull } from 'typeorm';
+import * as path from 'path';
 
 export class FileDto {
   constructor(file: AppFile, url: string) {
     this.id = file.id;
     this.title = file.title;
     this.fileName = file.fileName;
+    this.dateUploaded = file.dateUploaded;
     this.size = file.size;
-    this.mimeType = file.mimeType;
     this.type = file.getType();
     this.fileUrl = getViewUrl(url, this.fileName, file.path);
+
+    if (file.getType() === FileType.AUDIO) {
+      const fileName = path.parse(file.title).name;
+
+      const artist = fileName.split('-')[0];
+      const songName = fileName.split('-')[1];
+
+      this.artist = artist;
+      this.songName = songName;
+    }
   }
 
   /**
@@ -51,11 +63,10 @@ export class FileDto {
   size: number;
 
   /**
-   * File MIME type
-   * @example 'image/png'
+   * File date uploaded
+   * @example 2023-11-24T07:50:53.158Z
    */
-  @MaxLength(20)
-  mimeType: string;
+  dateUploaded: Date;
 
   /**
    * File type
@@ -63,4 +74,14 @@ export class FileDto {
    * @example 'image'
    */
   type: FileType;
+
+  /**
+   * If file is a song get its artist
+   */
+  artist: string | null = null;
+
+  /**
+   * If file is a song get its song name
+   */
+  songName: string | null = null;
 }

@@ -11,5 +11,17 @@ export function getTimeFromSeconds(sec: number) {
     .filter(Boolean)
     .join(":");
 
-  return time
+  return time;
+}
+
+export function formatDate(date: string | Date) {
+  date = new Date(date);
+
+  date = date.toLocaleDateString("en-EN", {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  return date
 }
