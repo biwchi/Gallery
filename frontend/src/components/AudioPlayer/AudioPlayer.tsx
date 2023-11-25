@@ -9,11 +9,11 @@ import { useSelector } from "react-redux";
 import {
   audioPlayerActions,
   selectAudioPlayer,
-  selectCurrentSound,
 } from "@/store/audioPlayerSlice";
 import { twMerge } from "tailwind-merge";
 import { getTimeFromSeconds } from "@/utils";
 import { BaseRange } from "../Base/BaseRange";
+import { useCurrentSound } from "@/hooks/useCurrentSound";
 
 const icon = {
   pause: "line-md:pause-to-play-filled-transition",
@@ -32,7 +32,7 @@ export default function AudioPlayer() {
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const interval = useRef<NodeJS.Timeout | undefined>();
 
-  const currentSound = useSelector(selectCurrentSound);
+  const currentSound = useCurrentSound();
   const audioPlayer = useSelector(selectAudioPlayer);
   const dispatch = useAppDispatch();
 
@@ -85,7 +85,7 @@ export default function AudioPlayer() {
     if (!audioPlayerRef.current) return;
     setPlayerState(initialPlayerState);
     audioPlayerRef.current.play();
-  }, [currentIndex]);
+  }, [currentSound]);
 
   return (
     <ReactPortal wrapperId="audioPlayer">
@@ -97,16 +97,18 @@ export default function AudioPlayer() {
             : " visible bottom-2.5 opacity-100",
         )}
       >
-        <audio
-          ref={audioPlayerRef}
-          src={currentSound.fileUrl}
-          onError={() => dispatch(setFiles([]))}
-          onLoadStart={() => toggleLoading(true)}
-          onLoadedData={() => toggleLoading(false)}
-          onEnded={() => dispatch(incrementIndex())}
-          onPlay={() => togglePaused(false)}
-          onPause={() => togglePaused(true)}
-        ></audio>
+        {currentSound.fileName && (
+          <audio
+            ref={audioPlayerRef}
+            src={currentSound.fileUrl}
+            onError={() => dispatch(setFiles([]))}
+            onLoadStart={() => toggleLoading(true)}
+            onLoadedData={() => toggleLoading(false)}
+            onEnded={() => dispatch(incrementIndex())}
+            onPlay={() => togglePaused(false)}
+            onPause={() => togglePaused(true)}
+          ></audio>
+        )}
         <div className="flex items-center gap-4 rounded-full bg-black px-5 py-2.5 shadow-xl">
           <div className="flex text-2xl">
             <BaseIconButton

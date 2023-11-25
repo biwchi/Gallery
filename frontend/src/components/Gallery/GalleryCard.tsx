@@ -5,10 +5,15 @@ import { formatDate } from "@/utils";
 
 type GalleryCardProps = {
   file: AppFile;
+  showType?: boolean;
   onClick?: () => void;
 };
 
-export default function GalleryCard({ file, onClick }: GalleryCardProps) {
+export default function GalleryCard({
+  file,
+  onClick,
+  showType = true,
+}: GalleryCardProps) {
   const icons = {
     image: "ph:image",
     video: "ph:video-duotone",
@@ -26,10 +31,12 @@ export default function GalleryCard({ file, onClick }: GalleryCardProps) {
         type={file.type}
       />
 
-      <Icon
-        className="absolute left-2 top-2 rounded-full bg-black p-2.5 text-2xl"
-        icon={icons[file.type]}
-      />
+      {showType && (
+        <Icon
+          className="absolute left-2 top-2 rounded-full bg-black p-2.5 text-2xl"
+          icon={icons[file.type]}
+        />
+      )}
 
       <div className="pointer-events-none relative flex h-full w-full flex-col justify-end bg-gradient-to-b from-transparent to-black/70">
         <div className="px-5 py-3">

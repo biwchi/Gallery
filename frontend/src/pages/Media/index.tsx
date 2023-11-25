@@ -21,14 +21,21 @@ export default function Media() {
     const file = appFiles[idx];
 
     if (file.type === "audio") {
-      dispatch(setCurrentIndex(idx));
-      dispatch(setAudioFiles(appFiles.filter((file) => file.type === "audio")));
+      const files = appFiles.filter((file) => file.type === "audio");
+      dispatch(setAudioFiles(files));
+      dispatch(
+        setCurrentIndex(
+          files.findIndex((soundFile) => soundFile.id === file.id),
+        ),
+      );
       return;
     }
 
+    const files = appFiles.filter((file) => file.type !== "audio");
+
     dispatch(toggleMediaViewer(true));
     dispatch(setCurrentFileIndex(idx));
-    dispatch(setFiles(appFiles));
+    dispatch(setFiles(files));
   }
 
   async function getFiles() {

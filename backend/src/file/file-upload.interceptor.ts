@@ -4,12 +4,11 @@ import {
   FilesInterceptor,
 } from '@nestjs/platform-express/multer';
 import { diskStorage } from 'multer';
-import { ConfigGetOptions, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import * as path from 'path';
 import * as uuid4 from 'uuid4';
 import * as fs from 'fs';
-import * as iconv from 'iconv-lite'
 
 type FileUploadInterceptorOptions = {
   fieldName: string;
@@ -38,7 +37,9 @@ function buildMulterConfig(
         cb(null, destination);
       },
       filename: (req, file, cb) => {
-        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf-8')
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+          'utf-8',
+        );
         cb(null, `${uuid4()}-${file.originalname.replace(/\s+/g, '_')}`);
       },
     }),

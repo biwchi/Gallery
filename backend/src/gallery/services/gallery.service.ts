@@ -19,7 +19,10 @@ export class GalleryService {
     const [files, itemCount] = await this.fileRepository.findAndCount({
       skip: query.offset,
       take: query.limit,
-      where: { title: query.search && Like(`%${query.search}%`) },
+      where: {
+        title: query.search && Like(`%${query.search}%`),
+        mimeType: query.type && Like(`%${query.type}%`),
+      },
     });
 
     const result = files.map((file) =>

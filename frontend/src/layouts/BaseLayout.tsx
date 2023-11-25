@@ -6,6 +6,8 @@ import { ChangeEvent, useRef, useState } from "react";
 import GalleryService from "@/services/GalleryService";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import BaseIconButton from "@/components/Base/BaseIconButton";
+import BaseSelect from "@/components/Base/BaseSelect";
+import BaseOption from "@/components/Base/BaseSelect/BaseOption";
 
 type BaseLayoutProps = {
   children: JSX.Element;
@@ -13,10 +15,13 @@ type BaseLayoutProps = {
 };
 
 export default function BaseLayout({ children, title }: BaseLayoutProps) {
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [isFileModal, toggleFileModal] = useToggle(false);
+
   const [files, setFiles] = useState<File[]>([]);
+  const [sorting, setSorting] = useState("");
+
   const [createFiles, isLoading] = useLoading(
     GalleryService.createFiles.bind(GalleryService),
   );
@@ -53,19 +58,25 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
             className="invisible absolute h-0 w-0"
             onChange={onFileChange}
           />
-            <BaseButton onClick={(() => inputRef.current?.click())} display="block" text="Select files" />
+          <BaseButton
+            onClick={() => inputRef.current?.click()}
+            display="block"
+            text="Select files"
+          />
 
-          <div className="my-3 flex flex-col gap-1">
+          <div className="my-2 flex max-w-md flex-col gap-1">
             {files.map((file, idx) => {
               return (
                 <div
                   key={idx}
                   className="flex w-full items-center justify-between rounded-md p-1 transition hover:bg-secondary"
                 >
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 overflow-hidden">
                     <Icon className="text-xl" icon="ph:file-duotone" />
 
-                    <span>{file.name}</span>
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+                      {file.name}
+                    </span>
                   </div>
 
                   <BaseIconButton
@@ -99,6 +110,14 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
 
       <div className="py-7">
         <BaseInput placeholder="Search..." />
+
+        <BaseSelect
+          value={sorting}
+          onChange={(val) => setSorting(val)}
+          placeholder="Select sort method"
+        >
+          <BaseOption label="Bebra" value={1} />
+        </BaseSelect>
       </div>
 
       {children}

@@ -1,4 +1,5 @@
 import {
+  IsEnum,
   IsInt,
   IsNumber,
   IsOptional,
@@ -7,6 +8,7 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { FileType } from 'src/gallery/common/enums';
 
 export class AppQueryDto {
   /**
@@ -35,4 +37,10 @@ export class AppQueryDto {
   @IsString()
   @IsOptional()
   search?: string;
+
+  /**
+   * Filter by file type
+   */
+  @IsEnum(FileType)
+  type?: FileType;
 }
