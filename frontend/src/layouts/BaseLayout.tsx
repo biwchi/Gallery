@@ -19,7 +19,7 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
   const [isFileModal, toggleFileModal] = useToggle(false);
 
   const [files, setFiles] = useState<File[]>([]);
-  const [sorting, setSorting] = useState({ label: "bebra", value: 1 });
+  const [sorting, setSorting] = useState('');
 
   const [createFiles, isLoading] = useLoading(
     GalleryService.createFiles.bind(GalleryService),
@@ -110,12 +110,11 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
       <div className="flex items-center space-x-8 py-7">
         <BaseInput placeholder="Search..." />
 
-        {sorting.value}
+        {sorting}
 
         <BaseSelect
           value={sorting}
           onChange={(val) => setSorting(val)}
-          keyValue={'label'}
           options={[
             { label: "bebra", value: 1 },
             { label: "bebra 2", value: 2 },

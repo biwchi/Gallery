@@ -28,13 +28,13 @@ type ValueProps<V extends Option> = V extends string | number
       keyValue: keyof V;
     };
 
-type BaseSelectProps<T extends Option> = {
+type BaseSelectProps<T extends Option, V extends Option> = {
   label?: string;
   placeholder?: string;
 } & OptionsProps<T> &
-  ValueProps<T>;
+  ValueProps<V>;
 
-export default function BaseSelect<T extends Option>({
+export default function BaseSelect<T extends Option, V extends Option>({
   value,
   onChange,
   options,
@@ -42,7 +42,7 @@ export default function BaseSelect<T extends Option>({
   valueKey,
   labelKey,
   placeholder = "Select",
-}: BaseSelectProps<T>) {
+}: BaseSelectProps<T, V>) {
   const selectInputRef = useRef<HTMLDivElement>(null);
 
   const [isOpened, toggleOpened] = useToggle(false);
@@ -76,19 +76,12 @@ export default function BaseSelect<T extends Option>({
   }
 
   function handleSelect(opt: Option) {
-    if (typeof opt === "object" && keyValue && opt.hasOwnProperty(keyValue)) {
-      onChange(opt[keyValue]);
-      return;
+    if(typeof value == 'string' || typeof value == 'number') {
+      onChange(getValue(opt))
     }
 
-    if (typeof opt === "string") {
-      onChange(opt);
-      return;
-    }
-
-    if (typeof opt === "number") {
-      onChange(opt);
-      return;
+    if(typeof value === 'object' && keyValue opt) {
+      
     }
   }
 
@@ -97,7 +90,7 @@ export default function BaseSelect<T extends Option>({
     <div ref={selectInputRef} className="relative">
       <div
         onClick={() => toggleOpened()}
-        className="cursor-pointer rounded-md border  border-secondary px-2 py-2"
+        className="cursor-pointer rounded-md border  border-secondary min-w-[15rem] px-2 py-2"
       >
         <span
           className={twMerge(
