@@ -2,60 +2,74 @@ import { useClickOutside, useToggle } from "@/hooks";
 import { useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
-type Option = string | number | Record<string, any>;
+type Option = string | number | object;
 
-type OptionsProps<O> = O extends string | number
+type OptionsProps<O, V> = O extends string | number
   ? {
       options: O[];
-      labelKey?: never;
-      valueKey?: never;
+      label?: never;
+      valueOpt?: never;
+    }
+  : V extends string | number
+  ? {
+      options: O[];
+      label: keyof O;
+      valueOpt: keyof O;
     }
   : {
       options: O[];
-      labelKey: keyof O;
-      valueKey: keyof O;
+      label: keyof O;
+      valueOpt?: never;
     };
 
-type ValueProps<V extends Option> = V extends string | number
+type ValueProps<V, O> = V extends string | number
   ? {
       value: V;
-      onChange: (newVal: V) => void;
+      onChange: (
+        newVal: O extends string | number ? O : string | number,
+      ) => void;
       keyValue?: never;
+    }
+  : O extends string | number
+  ? {
+      value: V;
+      onChange: (newVal: O) => void;
+      keyValue: keyof V;
     }
   : {
       value: V;
-      onChange: (newVal: V) => void;
+      onChange: (newVal: O) => void;
       keyValue: keyof V;
     };
 
-type BaseSelectProps<T extends Option, V extends Option> = {
+type BaseSelectProps<O, V> = {
   label?: string;
   placeholder?: string;
-} & OptionsProps<T> &
-  ValueProps<V>;
+} & OptionsProps<O, V> &
+  ValueProps<V, O>;
 
-export default function BaseSelect<T extends Option, V extends Option>({
+export default function BaseSelect<O extends Option, V extends Option>({
   value,
   onChange,
   options,
   keyValue,
-  valueKey,
-  labelKey,
+  valueOpt,
+  label,
   placeholder = "Select",
-}: BaseSelectProps<T, V>) {
+}: BaseSelectProps<O, V>) {
   const selectInputRef = useRef<HTMLDivElement>(null);
-
   const [isOpened, toggleOpened] = useToggle(false);
-
   const computedValue = getValue(value);
 
+  function handleOnChange(newVal: any) {
+    //@ts-ignore
+    onChange(newVal);
+    toggleOpened(false);
+  }
+
   function getLabel(option: Option): string {
-    if (
-      typeof option === "object" &&
-      labelKey &&
-      option.hasOwnProperty(labelKey)
-    ) {
-      return option[labelKey];
+    if (typeof option === "object" && label && option.hasOwnProperty(label)) {
+      return option[label];
     }
 
     if (typeof option === "string" || typeof option === "number") {
@@ -76,12 +90,20 @@ export default function BaseSelect<T extends Option, V extends Option>({
   }
 
   function handleSelect(opt: Option) {
-    if(typeof value == 'string' || typeof value == 'number') {
-      onChange(getValue(opt))
+    if (typeof value !== "object" && typeof opt !== "object") {
+      handleOnChange(opt);
     }
 
-    if(typeof value === 'object' && keyValue opt) {
-      
+    if (typeof value === "object" && typeof opt !== "object") {
+      handleOnChange(opt);
+    }
+
+    if (typeof value !== "object" && typeof opt === "object" && valueOpt) {
+      handleOnChange(opt[valueOpt]);
+    }
+
+    if (typeof value === "object" && typeof opt === "object") {
+      handleOnChange(opt);
     }
   }
 
@@ -90,7 +112,7 @@ export default function BaseSelect<T extends Option, V extends Option>({
     <div ref={selectInputRef} className="relative">
       <div
         onClick={() => toggleOpened()}
-        className="cursor-pointer rounded-md border  border-secondary min-w-[15rem] px-2 py-2"
+        className="min-w-[15rem] cursor-pointer rounded-md  border border-secondary px-2 py-2"
       >
         <span
           className={twMerge(
@@ -103,13 +125,14 @@ export default function BaseSelect<T extends Option, V extends Option>({
 
       <ul
         className={twMerge(
-          "absolute mt-2 w-full rounded-md bg-accent py-3",
+          "absolute z-50 mt-2 w-full rounded-md bg-accent py-3",
           isOpened ? "visible opacity-100" : "invisible opacity-0",
         )}
       >
-        {options.map((option) => {
+        {options.map((option, idx) => {
           return (
             <li
+              key={idx}
               onClick={() => handleSelect(option)}
               className="cursor-pointer px-4 py-2 hover:bg-secondary"
             >
