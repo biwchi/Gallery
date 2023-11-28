@@ -7,7 +7,6 @@ import GalleryService from "@/services/GalleryService";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import BaseIconButton from "@/components/Base/BaseIconButton";
 import BaseSelect from "@/components/Base/BaseSelect";
-import BaseSelectV2 from "@/components/Base/BaseSelect2";
 
 type BaseLayoutProps = {
   children: JSX.Element;
@@ -20,7 +19,7 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
   const [isFileModal, toggleFileModal] = useToggle(false);
 
   const [files, setFiles] = useState<File[]>([]);
-  const [sorting, setSorting] = useState({ label: "label", value: 'value' });
+  const [sorting, setSorting] = useState("sorting");
 
   const [createFiles, isLoading] = useLoading(
     GalleryService.createFiles.bind(GalleryService),
@@ -111,25 +110,18 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
       <div className="flex items-center space-x-8 py-7">
         <BaseInput placeholder="Search..." />
 
-        {JSON.stringify(sorting)}
-
-        <BaseSelectV2
-          label="select v2"
-          value={sorting}
-          valueLabel="label"
-          options={[1, 2]}
-          onChange={(value) => {
-            console.log(value);
-            setSorting(value);
-          }}
-        />
-
         <BaseSelect
           value={sorting}
-          onChange={(val) => setSorting({ ...sorting, value: val })}
-          keyValue="value"
-          options={[1, 2, 3]}
-          placeholder="Select sort method"
+          options={[
+            { label: "Image", value: "image" },
+            { label: "Vidoe", value: "video" },
+            { label: "Audio", value: "audio" },
+          ]}
+          optionLabel="label"
+          optionValue="value"
+          onChange={(value) => {
+            setSorting(value);
+          }}
         />
       </div>
 

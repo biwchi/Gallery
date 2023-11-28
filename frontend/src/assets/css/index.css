@@ -7,3 +7,14 @@
     @apply bg-background text-text;
   }
 }
+
+:root {
+  --white: #fff;
+  --black: #000;
+
+  --gray-light: #a0a0a0;
+  --background: #121214;
+  --primary: #7400a8;
+  --secondary: #3f2052;
+  --accent: #9c4dff;
+}

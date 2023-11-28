@@ -1,132 +1,99 @@
+import styles from "./index.module.css";
+import clsx from "clsx";
+
 import { useClickOutside, useToggle } from "@/hooks";
 import { useRef } from "react";
-import { twMerge } from "tailwind-merge";
+import { BaseSelectProps, Option, Value } from "./types";
+import { Icon } from "@iconify-icon/react/dist/iconify.js";
 
-type Option = string | number | object;
-
-type OptionsProps<O, V> = O extends string | number
-  ? {
-      options: O[];
-      label?: never;
-      valueOpt?: never;
-    }
-  : V extends string | number
-  ? {
-      options: O[];
-      label: keyof O;
-      valueOpt: keyof O;
-    }
-  : {
-      options: O[];
-      label: keyof O;
-      valueOpt?: never;
-    };
-
-type ValueProps<V, O> = V extends string | number
-  ? {
-      value: V;
-      onChange: (
-        newVal: O extends string | number ? O : string | number,
-      ) => void;
-      keyValue?: never;
-    }
-  : O extends string | number
-  ? {
-      value: V;
-      onChange: (newVal: O) => void;
-      keyValue: keyof V;
-    }
-  : {
-      value: V;
-      onChange: (newVal: O) => void;
-      keyValue: keyof V;
-    };
-
-type BaseSelectProps<O, V> = {
-  label?: string;
-  placeholder?: string;
-} & OptionsProps<O, V> &
-  ValueProps<V, O>;
-
-export default function BaseSelect<O extends Option, V extends Option>({
+export default function BaseSelect<V extends Value, O extends Option>({
+  options,
   value,
   onChange,
-  options,
-  keyValue,
-  valueOpt,
+  optionLabel,
+  optionValue,
+  valueLabel,
   label,
   placeholder = "Select",
-}: BaseSelectProps<O, V>) {
-  const selectInputRef = useRef<HTMLDivElement>(null);
+}: BaseSelectProps<V, O>) {
+  const selectRef = useRef<HTMLDivElement>(null);
   const [isOpened, toggleOpened] = useToggle(false);
-  const computedValue = getValue(value);
 
-  function handleOnChange(newVal: any) {
-    //@ts-ignore
-    onChange(newVal);
-    toggleOpened(false);
+  const computedValue = (() => {
+    if (typeof value == "object" && valueLabel) {
+      return value[valueLabel] as string;
+    }
+
+    if (typeof value !== "object" && optionLabel && optionValue) {
+      const optionsHasValue = options.find(
+        (option) => typeof option == "object" && option[optionValue] == value,
+      );
+      
+      if (optionsHasValue) return optionsHasValue[optionLabel];
+    }
+
+    return value.toString();
+  })();
+
+  function getLabel(option: Option) {
+    if (typeof option == "object" && optionLabel) return option[optionLabel];
+    return option.toString();
   }
 
-  function getLabel(option: Option): string {
-    if (typeof option === "object" && label && option.hasOwnProperty(label)) {
-      return option[label];
+  function handleSelect(option: Option) {
+    const change = (val: any) => (onChange(val), toggleOpened(false));
+
+    if (typeof option == "object") {
+      if (optionValue) change(option[optionValue]);
+      else change(option);
+
+      return;
     }
 
-    if (typeof option === "string" || typeof option === "number") {
-      return option.toString();
-    }
-
-    return "";
+    if (typeof option !== "object") change(option);
   }
 
-  function getValue(value: Option): string {
-    if (typeof value === "object" && keyValue) return value[keyValue];
+  function isSelected(option: Option) {
+    if (typeof option == "object") {
+      if (optionValue) {
+        return option[optionValue] == value;
+      }
 
-    if (typeof value === "string" || typeof value === "number") {
-      return value.toString();
+      return JSON.stringify(option) === JSON.stringify(value);
     }
 
-    return "";
+    return option == value;
   }
 
-  function handleSelect(opt: Option) {
-    if (typeof value !== "object" && typeof opt !== "object") {
-      handleOnChange(opt);
-    }
+  useClickOutside(selectRef, () => toggleOpened(false));
 
-    if (typeof value === "object" && typeof opt !== "object") {
-      handleOnChange(opt);
-    }
-
-    if (typeof value !== "object" && typeof opt === "object" && valueOpt) {
-      handleOnChange(opt[valueOpt]);
-    }
-
-    if (typeof value === "object" && typeof opt === "object") {
-      handleOnChange(opt);
-    }
-  }
-
-  useClickOutside(selectInputRef, () => toggleOpened(false));
   return (
-    <div ref={selectInputRef} className="relative">
+    <div ref={selectRef} className={styles.select}>
+      <span>{label}</span>
       <div
         onClick={() => toggleOpened()}
-        className="min-w-[15rem] cursor-pointer rounded-md  border border-secondary px-2 py-2"
+        className={clsx(styles.selectInput, isOpened && styles.opened)}
       >
         <span
-          className={twMerge(
-            value ? "text-white" : "select-none text-gray-500",
-          )}
+          className={
+            computedValue
+              ? styles.selectInputValue
+              : styles.selectInputValuePlaceholder
+          }
         >
           {computedValue || placeholder}
         </span>
+
+        <Icon
+          className={clsx(styles.selectInputChevron, isOpened && styles.opened)}
+          icon="ph:caret-down"
+        />
       </div>
 
       <ul
-        className={twMerge(
-          "absolute z-50 mt-2 w-full rounded-md bg-accent py-3",
-          isOpened ? "visible opacity-100" : "invisible opacity-0",
+        className={clsx(
+          styles.options,
+          isOpened ? styles.opened : styles.closed,
         )}
       >
         {options.map((option, idx) => {
@@ -134,7 +101,10 @@ export default function BaseSelect<O extends Option, V extends Option>({
             <li
               key={idx}
               onClick={() => handleSelect(option)}
-              className="cursor-pointer px-4 py-2 hover:bg-secondary"
+              className={clsx(
+                styles.option,
+                isSelected(option) && styles.selected,
+              )}
             >
               {getLabel(option)}
             </li>
