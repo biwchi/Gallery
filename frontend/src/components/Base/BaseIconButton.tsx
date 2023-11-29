@@ -42,7 +42,7 @@ export default function BaseIconButton({
   ...props
 }: BaseIconButtonProps) {
   return (
-    <button className="flex" {...props}>
+    <button className='flex' {...props} >
       <Icon className={iconButton({ shape, variant, size })} icon={icon} />
     </button>
   );

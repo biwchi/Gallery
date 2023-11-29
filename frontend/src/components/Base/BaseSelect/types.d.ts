@@ -1,5 +1,5 @@
 export type Option = string | number | Record<string, any>;
-export type Value = Option;
+export type Value = Option | null;
 
 type OptionsProps<O, V> = O extends string | number
   ? {
@@ -19,7 +19,7 @@ type OptionsProps<O, V> = O extends string | number
       optionValue?: never;
     };
 
-type ValueProps<V, O> = V extends string | number
+type ValueProps<V, O> = V extends string | number | null
   ? {
       value: V;
       onChange: (newVal: any) => void;
@@ -37,8 +37,9 @@ type ValueProps<V, O> = V extends string | number
       valueLabel: keyof V;
     };
 
-export type BaseSelectProps<O, V> = {
+export type BaseSelectProps<V, O> = {
   label?: string;
   placeholder?: string;
+  clearable?: boolean
 } & OptionsProps<O, V> &
   ValueProps<V, O>;

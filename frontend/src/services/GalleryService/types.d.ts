@@ -1,3 +1,5 @@
+import { PaginateParams } from '../types';
+
 export type FileType = "image" | "video" | "audio";
 
 export type AppFile = {
@@ -11,3 +13,8 @@ export type AppFile = {
   artist: string | null
   songName: strig | null
 };
+
+export type GalleryServiceParams = {
+  type?: string
+  sorting?: string
+} & PaginateParams

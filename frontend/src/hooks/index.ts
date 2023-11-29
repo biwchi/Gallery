@@ -5,3 +5,4 @@ export * from "./useElementSize";
 export * from "./usePrevious";
 export * from "./useToggle";
 export * from './useLoading'
+export * from './useRouteQuery'

@@ -7,11 +7,15 @@ import { mediaViewerActions } from "@/store/mediaViewerSlice";
 import { useEffect, useState } from "react";
 import GalleryService from "@/services/GalleryService";
 import { audioPlayerActions } from "@/store/audioPlayerSlice";
+import { useRouteQuery } from "@/hooks";
 
 export default function Media() {
   const dispatch = useAppDispatch();
 
   const [appFiles, setAppFiles] = useState<AppFile[]>([]);
+
+  const [filter] = useRouteQuery("filterBy");
+  const [sorting] = useRouteQuery("sorting");
 
   const { toggleMediaViewer, setFiles, setCurrentFileIndex } =
     mediaViewerActions;
@@ -32,20 +36,27 @@ export default function Media() {
     }
 
     const files = appFiles.filter((file) => file.type !== "audio");
-
     dispatch(toggleMediaViewer(true));
-    dispatch(setCurrentFileIndex(idx));
+    dispatch(
+      setCurrentFileIndex(
+        files.findIndex((soundFile) => soundFile.id === file.id),
+      ),
+    );
     dispatch(setFiles(files));
   }
 
   async function getFiles() {
-    const filesResponse = await GalleryService.getAll();
+    console.log(filter, sorting);
+    const filesResponse = await GalleryService.getAll({
+      type: filter || undefined,
+      sorting: sorting || undefined,
+    });
     setAppFiles(filesResponse.data.result);
   }
 
   useEffect(() => {
     getFiles();
-  }, []);
+  }, [sorting, filter]);
 
   return (
     <BaseLayout title="All media">
@@ -53,7 +64,7 @@ export default function Media() {
         {appFiles.map((file, idx) => {
           return (
             <GalleryCard
-              key={idx}
+              key={file.id}
               file={file}
               onClick={() => handleOpenFile(idx)}
             />

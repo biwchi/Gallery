@@ -1,10 +1,9 @@
-import "./Modal.css";
+import styles from "./index.module.css";
 
 import { useClickOutside } from "@/hooks";
 import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
 import { useEffect, useRef } from "react";
-import { twMerge } from "tailwind-merge";
 
 type ModalProps = {
   title?: string;
@@ -39,16 +38,11 @@ export default function Modal({
     <>
       {isModal && (
         <ReactPortal wrapperId="modals">
-          <div className="fixed left-0 top-0 flex h-screen w-screen items-center justify-center">
-            <div
-              ref={modalRef}
-              className={twMerge(
-                "z-50 min-w-[30rem] rounded-xl bg-black p-5 shadow-md",
-              )}
-            >
+          <div className={styles.modal}>
+            <div ref={modalRef} className={styles.modalBody}>
               {!noHeader && (
-                <div className="flex items-center justify-between">
-                  <h1 className='text-xl'>{title}</h1>
+                <div className={styles.header}>
+                  <h1 className={styles.headerTitle}>{title}</h1>
 
                   <BaseIconButton onClick={handleClose} icon="ph:x" />
                 </div>
@@ -57,7 +51,7 @@ export default function Modal({
               <div>{children}</div>
             </div>
 
-            <div className="fixed h-full w-full bg-black/20 backdrop-blur-[2px]" />
+            <div className={styles.overlay} />
           </div>
         </ReactPortal>
       )}

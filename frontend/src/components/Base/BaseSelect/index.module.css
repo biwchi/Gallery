@@ -12,30 +12,46 @@
   padding-right: 1rem;
 }
 
+
 .selectInput.opened {
   box-shadow: 0 0 0 2px var(--primary);
 }
-
 
 .selectInputValue {
   color: var((--white));
 }
 
-.selectInputValuePlaceholder {
+.selectInputPlaceholder {
   user-select: none;
   color: gray;
 }
 
-.selectInputChevron {
+.selectInputChevron, .selectInputClear {
   transition: transform .3s ease;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 0.5rem;
+  right: 0.75rem;
+}
+
+.selectInputChevron {
+  right: 1rem
 }
 
 .selectInputChevron.opened {
   transform: rotate(180deg) translateY(50%);
+}
+
+.selectInputClear {
+  display: none;
+}
+
+.selectInput:hover .selectInputClear {
+  display: block;
+}
+
+.selectInput.clearable:hover .selectInputChevron {
+  display: none;
 }
 
 .options {

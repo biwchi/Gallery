@@ -1,47 +1,32 @@
-import Modal from "../components/Modal/Modal";
+import Modal from "../components/Modals";
 import { BaseButton } from "../components/Base/BaseButton";
 import BaseInput from "../components/Base/BaseInput";
-import { useLoading, useToggle } from "@/hooks";
-import { ChangeEvent, useRef, useState } from "react";
-import GalleryService from "@/services/GalleryService";
-import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import BaseIconButton from "@/components/Base/BaseIconButton";
+import { useRouteQuery, useToggle } from "@/hooks";
 import BaseSelect from "@/components/Base/BaseSelect";
+import FilesUploadModal from "@/components/Modals/FilesUploadModal";
 
 type BaseLayoutProps = {
   children: JSX.Element;
   title: string;
 };
 
-export default function BaseLayout({ children, title }: BaseLayoutProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+const sortOptions = [
+  { label: "By date", value: "date" },
+  { label: "By file size", value: "fileSize" },
+];
 
+const filterOptions = [
+  { label: "Audio", value: "audio" },
+  { label: "Video", value: "video" },
+  { label: "Image", value: "image" },
+];
+
+export default function BaseLayout({ children, title }: BaseLayoutProps) {
   const [isFileModal, toggleFileModal] = useToggle(false);
 
-  const [files, setFiles] = useState<File[]>([]);
-  const [sorting, setSorting] = useState("sorting");
-
-  const [createFiles, isLoading] = useLoading(
-    GalleryService.createFiles.bind(GalleryService),
-  );
-
-  function removeFile(idx: number) {
-    setFiles(files.filter((_, idxArray) => idx !== idxArray));
-  }
-
-  function onFileChange(e: ChangeEvent<HTMLInputElement>) {
-    if (!e.target.files) return;
-    setFiles(Array.from(e.target.files));
-  }
-
-  async function uploadFiles() {
-    if (!files.length) return;
-
-    const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
-    await createFiles(formData);
-  }
-
+  const [sorting, setSorting] = useRouteQuery('sorting', 'date')
+  const [filter, setFilter] = useRouteQuery('filterBy', 'audio');
+  
   return (
     <div>
       <Modal
@@ -49,53 +34,7 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
         isModal={isFileModal}
         toggleModal={toggleFileModal}
       >
-        <div>
-          <input
-            ref={inputRef}
-            multiple
-            type="file"
-            className="invisible absolute h-0 w-0"
-            onChange={onFileChange}
-          />
-          <BaseButton
-            onClick={() => inputRef.current?.click()}
-            display="block"
-            text="Select files"
-          />
-
-          <div className="my-2 flex max-w-md flex-col gap-1">
-            {files.map((file, idx) => {
-              return (
-                <div
-                  key={idx}
-                  className="flex w-full items-center justify-between rounded-md p-1 transition hover:bg-secondary"
-                >
-                  <div className="flex items-center gap-1 overflow-hidden">
-                    <Icon className="text-xl" icon="ph:file-duotone" />
-
-                    <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                      {file.name}
-                    </span>
-                  </div>
-
-                  <BaseIconButton
-                    onClick={() => removeFile(idx)}
-                    size={"small"}
-                    icon="ph:x"
-                  />
-                </div>
-              );
-            })}
-          </div>
-
-          <BaseButton
-            display="block"
-            disabled={!files.length}
-            loading={isLoading}
-            onClick={uploadFiles}
-            text="Upload files"
-          />
-        </div>
+        <FilesUploadModal toggleFileModal={toggleFileModal} />
       </Modal>
 
       <div className="flex items-center justify-between">
@@ -111,16 +50,26 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
         <BaseInput placeholder="Search..." />
 
         <BaseSelect
-          value={sorting}
-          options={[
-            { label: "Image", value: "image" },
-            { label: "Vidoe", value: "video" },
-            { label: "Audio", value: "audio" },
-          ]}
+          placeholder="Select sort method"
+          value={sorting || null}
+          options={sortOptions}
           optionLabel="label"
           optionValue="value"
+          clearable
           onChange={(value) => {
             setSorting(value);
+          }}
+        />
+
+        <BaseSelect
+          placeholder="Filter by type"
+          value={filter || null}
+          options={filterOptions}
+          optionLabel="label"
+          optionValue="value"
+          clearable
+          onChange={(value) => {
+            setFilter(value);
           }}
         />
       </div>

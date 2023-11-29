@@ -2,9 +2,10 @@ import styles from "./index.module.css";
 import clsx from "clsx";
 
 import { useClickOutside, useToggle } from "@/hooks";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { BaseSelectProps, Option, Value } from "./types";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
+import BaseIconButton from "../BaseIconButton";
 
 export default function BaseSelect<V extends Value, O extends Option>({
   options,
@@ -14,12 +15,17 @@ export default function BaseSelect<V extends Value, O extends Option>({
   optionValue,
   valueLabel,
   label,
+  clearable,
   placeholder = "Select",
 }: BaseSelectProps<V, O>) {
   const selectRef = useRef<HTMLDivElement>(null);
   const [isOpened, toggleOpened] = useToggle(false);
 
+  const clear = (e: React.MouseEvent) => (e.stopPropagation(), onChange(null));
+
   const computedValue = (() => {
+    if (value === null) return "";
+
     if (typeof value == "object" && valueLabel) {
       return value[valueLabel] as string;
     }
@@ -28,7 +34,7 @@ export default function BaseSelect<V extends Value, O extends Option>({
       const optionsHasValue = options.find(
         (option) => typeof option == "object" && option[optionValue] == value,
       );
-      
+
       if (optionsHasValue) return optionsHasValue[optionLabel];
     }
 
@@ -72,13 +78,17 @@ export default function BaseSelect<V extends Value, O extends Option>({
       <span>{label}</span>
       <div
         onClick={() => toggleOpened()}
-        className={clsx(styles.selectInput, isOpened && styles.opened)}
+        className={clsx(
+          styles.selectInput,
+          isOpened && styles.opened,
+          clearable && computedValue && styles.clearable,
+        )}
       >
         <span
           className={
             computedValue
               ? styles.selectInputValue
-              : styles.selectInputValuePlaceholder
+              : styles.selectInputPlaceholder
           }
         >
           {computedValue || placeholder}
@@ -88,6 +98,12 @@ export default function BaseSelect<V extends Value, O extends Option>({
           className={clsx(styles.selectInputChevron, isOpened && styles.opened)}
           icon="ph:caret-down"
         />
+
+        {clearable && computedValue && (
+          <div className={styles.selectInputClear}>
+            <BaseIconButton onClick={clear} icon="ph-x" size={"small"} />
+          </div>
+        )}
       </div>
 
       <ul

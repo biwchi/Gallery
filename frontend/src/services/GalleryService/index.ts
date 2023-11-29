@@ -1,10 +1,10 @@
 import { BaseService } from "@/services/BaseService";
 import { Paginate } from "../types";
-import { AppFile } from "./types";
+import { AppFile, GalleryServiceParams } from "./types";
 
 class GalleryService extends BaseService {
-  public getAll() {
-    return this.instance.get<Paginate<AppFile>>("gallery");
+  public getAll(params?: GalleryServiceParams) {
+    return this.instance.get<Paginate<AppFile>>("gallery", { params: params });
   }
 
   public createFiles(data: FormData) {

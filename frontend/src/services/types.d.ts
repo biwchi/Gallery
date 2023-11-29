@@ -1,3 +1,6 @@
+export type * from "./AuthService/types";
+export type * from "./GalleryService/types";
+
 export type Paginate<T> = {
   count: number;
   next: boolean;
@@ -5,5 +8,7 @@ export type Paginate<T> = {
   result: T[];
 };
 
-export type * from "./AuthService/types";
-export type * from "./GalleryService/types";
+export type PaginateParams = {
+  offset?: number;
+  limit?: number;
+};
