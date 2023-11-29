@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function useRouteQuery(
@@ -8,8 +8,11 @@ export function useRouteQuery(
   const navigate = useNavigate();
 
   const [params, setParams] = useSearchParams();
+  const [query, setThisQuery] = useState(params.get(queryName) || defaultValue)
 
-  const setParam = (value: string | undefined) => {
+  const setQuery = (value: string | undefined) => {
+    if (params.has(queryName, value)) return;
+
     setParams((prevParams) => {
       if (!value) {
         prevParams.delete(queryName);
@@ -20,15 +23,15 @@ export function useRouteQuery(
       navigate({ search: `?${prevParams.toString()}` });
       return prevParams;
     });
+    setThisQuery(value)
   };
 
   useEffect(() => {
-    const query = params.get(queryName) || defaultValue;
-    const alreadyQueried = params.get(queryName);
-
-    if (!query || defaultValue == alreadyQueried) return;
-    setParam(query);
+    const queryParam = params.get(queryName);
+    if (!queryParam) return;
+    setQuery(queryParam);
+    console.log(query)
   }, []);
-
-  return [params.get(queryName) || undefined, setParam];
+  
+  return [query, setQuery];
 }

@@ -46,7 +46,7 @@ export default function Media() {
   }
 
   async function getFiles() {
-    console.log(filter, sorting);
+    console.log(filter, sorting)
     const filesResponse = await GalleryService.getAll({
       type: filter || undefined,
       sorting: sorting || undefined,
