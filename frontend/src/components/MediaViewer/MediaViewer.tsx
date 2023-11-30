@@ -96,6 +96,8 @@ export default function MediaViewer() {
             <div className="to-black/05 relative z-50 flex items-center justify-between bg-gradient-to-b from-black p-5">
               <h1>{slide.title}</h1>
 
+              <span className='flex-1 text-center text-gray-500'>{`${currentFileIndex + 1}/${files.length}`}</span>
+
               <div className="flex gap-2">
                 <BaseIconButton icon="ph:download-simple" />
                 <BaseIconButton

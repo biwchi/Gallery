@@ -16,6 +16,8 @@ import { Request } from 'express';
 import { AppQueryDto } from 'src/shared/dto/app-query.dto';
 import { FileDto } from '../dto/file.dto';
 import { ApiGenericResponse } from 'src/shared/swagger/generic-response';
+import { Sorting, SortingQuery } from 'src/shared/decorators/sorting-params';
+import { ApiSortingQuery } from 'src/shared/swagger/sorting-query';
 
 @Controller('gallery')
 @ApiTags('Working with projects files')
@@ -27,8 +29,13 @@ export class GalleryController {
    */
   @Get()
   @ApiGenericResponse(FileDto)
-  public getFiles(@Query() query: AppQueryDto, @Req() req: Request) {
-    return this.galleryService.getAllFiles(req, query);
+  @ApiSortingQuery(['dateUploaded', 'size'])
+  public getFiles(
+    @SortingQuery(['dateUploaded', 'size']) sorting: Sorting,
+    @Query() query: AppQueryDto,
+    @Req() req: Request,
+  ) {
+    return this.galleryService.getAllFiles(req, query, sorting);
   }
 
   /**

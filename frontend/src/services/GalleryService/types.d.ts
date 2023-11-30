@@ -17,4 +17,5 @@ export type AppFile = {
 export type GalleryServiceParams = {
   type?: string
   sorting?: string
+  search?: string
 } & PaginateParams

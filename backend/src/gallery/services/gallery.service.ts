@@ -6,6 +6,7 @@ import { FileMapper } from '../mappers/file.mapper';
 import { Request } from 'express';
 import { AppQueryDto } from 'src/shared/dto/app-query.dto';
 import { AppResponseDto } from 'src/shared/dto/app-response.dto';
+import { Sorting } from 'src/shared/decorators/sorting-params';
 
 @Injectable()
 export class GalleryService {
@@ -15,7 +16,7 @@ export class GalleryService {
     private readonly fileRepository: Repository<AppFile>,
   ) {}
 
-  public async getAllFiles(req: Request, query: AppQueryDto) {
+  public async getAllFiles(req: Request, query: AppQueryDto, sorting: Sorting) {
     const [files, itemCount] = await this.fileRepository.findAndCount({
       skip: query.offset,
       take: query.limit,
@@ -23,6 +24,9 @@ export class GalleryService {
         title: query.search && Like(`%${query.search}%`),
         mimeType: query.type && Like(`%${query.type}%`),
       },
+      order: {
+        ...sorting
+      }
     });
 
     const result = files.map((file) =>

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import GalleryService from "@/services/GalleryService";
 import { audioPlayerActions } from "@/store/audioPlayerSlice";
 import { useRouteQuery } from "@/hooks";
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function Media() {
   const dispatch = useAppDispatch();
@@ -16,6 +17,9 @@ export default function Media() {
 
   const [filter] = useRouteQuery("filterBy");
   const [sorting] = useRouteQuery("sorting");
+  const [search] = useRouteQuery('search')
+
+  const debouncedSearch = useDebounce(search, 400)
 
   const { toggleMediaViewer, setFiles, setCurrentFileIndex } =
     mediaViewerActions;
@@ -46,17 +50,17 @@ export default function Media() {
   }
 
   async function getFiles() {
-    console.log(filter, sorting)
     const filesResponse = await GalleryService.getAll({
       type: filter || undefined,
       sorting: sorting || undefined,
+      search: debouncedSearch || undefined
     });
     setAppFiles(filesResponse.data.result);
   }
 
   useEffect(() => {
     getFiles();
-  }, [sorting, filter]);
+  }, [sorting, filter, debouncedSearch]);
 
   return (
     <BaseLayout title="All media">

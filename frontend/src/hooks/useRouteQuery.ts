@@ -3,12 +3,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function useRouteQuery(
   queryName: string,
-  defaultValue?: string,
-): [string | undefined, (value: string) => void] {
+): [string | null, (value: string) => void] {
   const navigate = useNavigate();
 
   const [params, setParams] = useSearchParams();
-  const [query, setThisQuery] = useState(params.get(queryName) || defaultValue)
+  const [query, setThisQuery] = useState(params.get(queryName));
 
   const setQuery = (value: string | undefined) => {
     if (params.has(queryName, value)) return;
@@ -23,15 +22,17 @@ export function useRouteQuery(
       navigate({ search: `?${prevParams.toString()}` });
       return prevParams;
     });
-    setThisQuery(value)
   };
 
   useEffect(() => {
     const queryParam = params.get(queryName);
-    if (!queryParam) return;
+    if (!queryParam) {
+      setThisQuery(null);
+      return;
+    }
     setQuery(queryParam);
-    console.log(query)
-  }, []);
-  
+    setThisQuery(queryParam);
+  }, [params.get(queryName)]);
+
   return [query, setQuery];
 }

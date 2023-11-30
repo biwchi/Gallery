@@ -1,4 +1,4 @@
-import "./AudioPlayer.css";
+import styles from "./index.module.css";
 
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import BaseIconButton from "../Base/BaseIconButton";
@@ -36,11 +36,12 @@ export default function AudioPlayer() {
   const audioPlayer = useSelector(selectAudioPlayer);
   const dispatch = useAppDispatch();
 
-  const { files, currentIndex } = audioPlayer;
+  const { files } = audioPlayer;
   const { incrementIndex, decrementIndex, setFiles } = audioPlayerActions;
 
   const [isPaused, togglePaused] = useToggle(true);
   const [isLoading, toggleLoading] = useToggle(true);
+  const [isHidden, toggleHidden] = useToggle(false);
   const [playerState, setPlayerState] = useState(initialPlayerState);
 
   useEffect(() => {
@@ -91,10 +92,11 @@ export default function AudioPlayer() {
     <ReactPortal wrapperId="audioPlayer">
       <div
         className={twMerge(
-          "fixed left-1/2 -translate-x-1/2 font-sans transition-all duration-300",
+          "fixed left-1/2 -translate-x-1/2 transition-all duration-300",
           !files.length
-            ? "invisible -bottom-20 opacity-0"
-            : " visible bottom-2.5 opacity-100",
+          ? "invisible -bottom-20 opacity-0"
+          : " visible bottom-2.5 opacity-100",
+          isHidden ? '-bottom-20' : 'bottom-2.5',
         )}
       >
         {currentSound.fileName && (
@@ -109,6 +111,14 @@ export default function AudioPlayer() {
             onPause={() => togglePaused(true)}
           ></audio>
         )}
+        <button onClick={() => toggleHidden()} className={styles.playerHide}>
+          <div>
+            <span>{isHidden ? "Show" : "Hide"}</span>
+            <Icon
+              icon={isHidden ? "ph:caret-up-bold" : "ph:caret-down-bold"}
+            />
+          </div>
+        </button>
         <div className="flex items-center gap-4 rounded-full bg-black px-5 py-2.5 shadow-xl">
           <div className="flex text-2xl">
             <BaseIconButton
@@ -134,7 +144,7 @@ export default function AudioPlayer() {
           <div
             className={twMerge(
               "flex flex-col gap-2 transition-all duration-500",
-              !files.length
+              !files.length || isHidden
                 ? "min-w-[15rem] max-w-[15rem]"
                 : "min-w-[26rem] max-w-[30rem]",
             )}

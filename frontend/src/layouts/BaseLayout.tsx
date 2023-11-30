@@ -12,8 +12,8 @@ type BaseLayoutProps = {
 };
 
 const sortOptions = [
-  { label: "By date", value: "date" },
-  { label: "By file size", value: "fileSize" },
+  { label: "By date", value: "dateUploaded" },
+  { label: "By file size", value: "size" },
 ];
 
 const filterOptions = [
@@ -25,8 +25,9 @@ const filterOptions = [
 export default function BaseLayout({ children, title }: BaseLayoutProps) {
   const [isFileModal, toggleFileModal] = useToggle(false);
 
-  const [sorting, setSorting] = useRouteQuery('sorting', 'date')
-  const [filter, setFilter] = useRouteQuery('filterBy', 'audio');
+  const [sorting, setSorting] = useRouteQuery('sorting')
+  const [filter, setFilter] = useRouteQuery('filterBy');
+  const [search, setSearch] = useRouteQuery('search')
   
   return (
     <div>
@@ -39,7 +40,7 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
       </Modal>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-medium">{title}</h1>
+        <h1 className="text-3xl text-gray-500">{title}</h1>
         <BaseButton
           onClick={() => toggleFileModal()}
           text="Upload new files"
@@ -48,7 +49,7 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
       </div>
 
       <div className="flex items-center space-x-8 py-7">
-        <BaseInput placeholder="Search..." />
+        <BaseInput value={search || ""} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." />
 
         <BaseSelect
           placeholder="Select sort method"

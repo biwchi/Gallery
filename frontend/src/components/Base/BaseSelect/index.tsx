@@ -1,4 +1,4 @@
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 import clsx from "clsx";
 
 import { useClickOutside, useToggle } from "@/hooks";
@@ -79,7 +79,7 @@ export default function BaseSelect<V extends Value, O extends Option>({
       <div
         onClick={() => toggleOpened()}
         className={clsx(
-          styles.selectInput,
+          styles.input,
           isOpened && styles.opened,
           clearable && computedValue && styles.clearable,
         )}
@@ -87,20 +87,20 @@ export default function BaseSelect<V extends Value, O extends Option>({
         <span
           className={
             computedValue
-              ? styles.selectInputValue
-              : styles.selectInputPlaceholder
+              ? styles.value
+              : styles.placeholder
           }
         >
           {computedValue || placeholder}
         </span>
 
         <Icon
-          className={clsx(styles.selectInputChevron, isOpened && styles.opened)}
+          className={clsx(styles.chevron, isOpened && styles.opened)}
           icon="ph:caret-down"
         />
 
         {clearable && computedValue && (
-          <div className={styles.selectInputClear}>
+          <div className={styles.clear}>
             <BaseIconButton onClick={clear} icon="ph-x" size={"small"} />
           </div>
         )}

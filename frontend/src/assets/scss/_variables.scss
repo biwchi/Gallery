@@ -1,0 +1,61 @@
+$colors_theme: (
+  "primary": "purple",
+  "secondary": "purple-dark",
+  "accent": "purple-light",
+  "background": "black-light",
+);
+
+$colors: (
+  "white": #ffffff,
+
+  "black": #000000,
+  "black-light": #121214,
+
+  "purple": #7400a8,
+  "purple-light": #9c4dff,
+  "purple-dark": #3f2052,
+
+  "gray-light": #a0a0a0,
+);
+
+$breakpoints: (
+  "sm": 640px,
+  "md": 768px,
+  "lg": 1024px,
+  "xl": 1280px,
+  "2xl": 1536px,
+);
+
+@function HexToRGB($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
+@function cl($name, $opacity: false) {
+  @if $opacity {
+    @return RGBA(var(--color-#{unquote($name)}--rgb), $opacity);
+  } @else {
+    @return var(--color-#{unquote($name)});
+  }
+}
+
+:root {
+  @if $colors {
+    @if $colors_theme {
+      @each $key, $value in $colors_theme {
+        --color-#{$key}: var(--color-#{$value});
+        --color-#{$key}--rgb: var(--color-#{$value}--rgb);
+      }
+    }
+
+    @each $key, $value in $colors {
+      --color-#{$key}: #{$value};
+      --color-#{$key}--rgb: #{HexToRGB($value)};
+    }
+  }
+
+  @if $breakpoints {
+    @each $key, $value in $breakpoints {
+      --breakpoint-#{$key}: #{$value};
+    }
+  }
+}
