@@ -1,7 +1,10 @@
-@import './reset';
-@import "./variables";
+@use "./reset";
+@use "./variables";
+
+//Components 
+@use "./components/range";
 
 body {
   background-color: var(--color-background);
-  color: var(--color-white);
+  color: var(--color-text);
 }

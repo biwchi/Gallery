@@ -1,7 +1,7 @@
-import "./BaseRange.css";
+import clsx from "clsx";
+import styles from "./index.module.scss";
 
 import { ChangeEvent } from "react";
-import { twMerge } from "tailwind-merge";
 
 type BaseRangeProps = {
   value: string | number;
@@ -23,11 +23,11 @@ export function BaseRange({
   }
 
   return (
-    <div className="flex h-1.5 w-full items-center">
-      <div className="relative h-1 w-full cursor-pointer transition-all hover:h-1.5">
+    <div className={styles.range}>
+      <div className={styles.rangeBody}>
         <input
-          title=''
-          className={twMerge("progress", isLoading && "opacity-0")}
+          title=""
+          className={clsx(isLoading && styles.hide)}
           type="range"
           onMouseDown={() => onPress && onPress(true)}
           onMouseUp={() => onPress && onPress(false)}
@@ -36,13 +36,11 @@ export function BaseRange({
           onChange={onChangeInput}
         />
 
-        {isLoading && <div className="loader" />}
+        {isLoading && <div className={styles.loader} />}
 
         <div
           style={{ width: `${(Number(value) / Number(maxValue)) * 100}%` }}
-          className={twMerge(
-            "pointer-events-none absolute h-full select-none rounded-full bg-white",
-          )}
+          className={styles.progress}
         />
       </div>
     </div>

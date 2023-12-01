@@ -7,8 +7,10 @@ import GalleryService from '@/services/GalleryService';
 
 export default function FilesUploadModal({
   toggleFileModal,
+  triggerUpdate
 }: {
-  toggleFileModal: (val: boolean) => void;
+  toggleFileModal: (val: boolean) => void,
+  triggerUpdate: () => void
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +34,7 @@ export default function FilesUploadModal({
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
     await createFiles(formData);
+    triggerUpdate()
     toggleFileModal(false);
   }
 

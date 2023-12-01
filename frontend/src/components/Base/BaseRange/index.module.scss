@@ -1,0 +1,52 @@
+.range {
+  display: flex;
+  height: 10px;
+  width: 100%;
+  align-items: center;
+}
+
+.rangeBody {
+  position: relative;
+  height: 4px;
+  width: 100%;
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    height: 6px;
+  }
+
+  .hide {
+    opacity: 0;
+  }
+
+  .loader {
+    position: absolute;
+    width: 100%;
+    border-radius: 50%;
+    animation: loading infinite linear 3s;
+    background-image: repeating-linear-gradient(
+      -42.4deg,
+      #7400a8 0 10px,
+      #3f2052 10px 20px
+    );
+  }
+
+  .progress {
+    pointer-events: none;
+    position: absolute;
+    height: 100%;
+    user-select: none;
+    border-radius: 9999px;
+    background-color: var(--color-white-light);
+  }
+}
+
+@keyframes loading {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 119px;
+  }
+}

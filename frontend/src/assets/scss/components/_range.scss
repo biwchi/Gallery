@@ -1,0 +1,38 @@
+input[type="range"] {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1);
+  opacity: 1;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  margin: 0;
+  top: -50%;
+  height: 12px;
+  width: 12px;
+  transform: scale(0.2);
+  border-radius: 9999px;
+  border: none;
+  background-color: var(--color-white-light);
+  padding: 0;
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 100%;
+  border-radius: 9999px;
+  background-color: var(--color-secondary-100);
+}

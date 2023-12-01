@@ -1,4 +1,4 @@
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import BaseIconButton from "../Base/BaseIconButton";
@@ -10,10 +10,10 @@ import {
   audioPlayerActions,
   selectAudioPlayer,
 } from "@/store/audioPlayerSlice";
-import { twMerge } from "tailwind-merge";
 import { getTimeFromSeconds } from "@/utils";
 import { BaseRange } from "../Base/BaseRange";
 import { useCurrentSound } from "@/hooks/useCurrentSound";
+import clsx from "clsx";
 
 const icon = {
   pause: "line-md:pause-to-play-filled-transition",
@@ -91,12 +91,10 @@ export default function AudioPlayer() {
   return (
     <ReactPortal wrapperId="audioPlayer">
       <div
-        className={twMerge(
-          "fixed left-1/2 -translate-x-1/2 transition-all duration-300",
-          !files.length
-          ? "invisible -bottom-20 opacity-0"
-          : " visible bottom-2.5 opacity-100",
-          isHidden ? '-bottom-20' : 'bottom-2.5',
+        className={clsx(
+          styles.player,
+          !files.length && styles.off,
+          isHidden && styles.hidden,
         )}
       >
         {currentSound.fileName && (
@@ -111,16 +109,16 @@ export default function AudioPlayer() {
             onPause={() => togglePaused(true)}
           ></audio>
         )}
+
         <button onClick={() => toggleHidden()} className={styles.playerHide}>
           <div>
             <span>{isHidden ? "Show" : "Hide"}</span>
-            <Icon
-              icon={isHidden ? "ph:caret-up-bold" : "ph:caret-down-bold"}
-            />
+            <Icon icon={isHidden ? "ph:caret-up-bold" : "ph:caret-down-bold"} />
           </div>
         </button>
-        <div className="flex items-center gap-4 rounded-full bg-black px-5 py-2.5 shadow-xl">
-          <div className="flex text-2xl">
+
+        <div className={styles.playerBody}>
+          <div className={styles.buttons}>
             <BaseIconButton
               variant={"white"}
               size={"bigIcon"}
@@ -142,19 +140,16 @@ export default function AudioPlayer() {
           </div>
 
           <div
-            className={twMerge(
-              "flex flex-col gap-2 transition-all duration-500",
-              !files.length || isHidden
-                ? "min-w-[15rem] max-w-[15rem]"
-                : "min-w-[26rem] max-w-[30rem]",
+            className={clsx(
+              styles.information,
+              (!files.length || isHidden) && styles.hidden,
             )}
           >
-            <p className="overflow-hidden text-ellipsis whitespace-nowrap text-center">
+            <p className={styles.songName}>
               {currentSound.artist && (
-                <span className="text-gray-light">{currentSound.artist} -</span>
+                <span className={styles.artist}>{currentSound.artist} -</span>
               )}
-              <span className="font-medium">
-                {" "}
+              <span className={styles.name}>
                 {currentSound.songName || currentSound.title.split(".")[0]}
               </span>
             </p>
@@ -175,14 +170,14 @@ export default function AudioPlayer() {
               }}
             />
 
-            <div className="flex items-center justify-between text-sm text-gray-light">
+            <div className={styles.timing}>
               <span>{playerState.currentTimeFormatted || "0:00"}</span>
               <span>{playerState.durationFormatted || "0:00"}</span>
             </div>
           </div>
 
-          <div className="group relative flex">
-            <div className="invisible absolute bottom-full h-10 w-full group-hover:visible" />
+          <div className={styles.volume}>
+            <div className={styles.placeholder} />
             <AudioVolume
               playerVolume={audioPlayerRef.current?.volume || 100}
               onChangeVolume={(volume) => {
@@ -190,10 +185,7 @@ export default function AudioPlayer() {
                 audioPlayerRef.current.volume = volume / 100;
               }}
             />
-            <Icon
-              className="cursor-pointer p-3 text-2xl"
-              icon="material-symbols:volume-down-rounded"
-            />
+            <Icon icon="material-symbols:volume-down-rounded" />
           </div>
         </div>
       </div>
@@ -253,7 +245,7 @@ function AudioVolume({
   }
 
   return (
-    <div className="invisible absolute bottom-full left-1/2 -mb-6 flex h-1.5 w-32 -translate-x-1/2 -translate-y-full rotate-[270deg] items-center justify-center  rounded-full bg-black p-4 opacity-0 transition-all group-hover:visible group-hover:mb-10 group-hover:opacity-100 ">
+    <div className={styles.slider}>
       <BaseRange
         value={volume}
         maxValue={100}

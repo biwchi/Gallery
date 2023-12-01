@@ -4,11 +4,11 @@ import BaseInput from "../components/Base/BaseInput";
 import { useRouteQuery, useToggle } from "@/hooks";
 import BaseSelect from "@/components/Base/BaseSelect";
 import FilesUploadModal from "@/components/Modals/FilesUploadModal";
-import { useEffect } from 'react';
 
 type BaseLayoutProps = {
   children: JSX.Element;
   title: string;
+  triggerUpdate?: () => void;
 };
 
 const sortOptions = [
@@ -22,13 +22,17 @@ const filterOptions = [
   { label: "Image", value: "image" },
 ];
 
-export default function BaseLayout({ children, title }: BaseLayoutProps) {
+export default function BaseLayout({
+  children,
+  title,
+  triggerUpdate,
+}: BaseLayoutProps) {
   const [isFileModal, toggleFileModal] = useToggle(false);
 
-  const [sorting, setSorting] = useRouteQuery('sorting')
-  const [filter, setFilter] = useRouteQuery('filterBy');
-  const [search, setSearch] = useRouteQuery('search')
-  
+  const [sorting, setSorting] = useRouteQuery("sorting");
+  const [filter, setFilter] = useRouteQuery("filterBy");
+  const [search, setSearch] = useRouteQuery("search");
+
   return (
     <div>
       <Modal
@@ -36,7 +40,10 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
         isModal={isFileModal}
         toggleModal={toggleFileModal}
       >
-        <FilesUploadModal toggleFileModal={toggleFileModal} />
+        <FilesUploadModal
+          triggerUpdate={triggerUpdate ? triggerUpdate : () => {}}
+          toggleFileModal={toggleFileModal}
+        />
       </Modal>
 
       <div className="flex items-center justify-between">
@@ -49,7 +56,11 @@ export default function BaseLayout({ children, title }: BaseLayoutProps) {
       </div>
 
       <div className="flex items-center space-x-8 py-7">
-        <BaseInput value={search || ""} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." />
+        <BaseInput
+          value={search || ""}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search..."
+        />
 
         <BaseSelect
           placeholder="Select sort method"

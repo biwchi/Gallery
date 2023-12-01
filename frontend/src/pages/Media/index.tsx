@@ -8,18 +8,19 @@ import { useEffect, useState } from "react";
 import GalleryService from "@/services/GalleryService";
 import { audioPlayerActions } from "@/store/audioPlayerSlice";
 import { useRouteQuery } from "@/hooks";
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function Media() {
   const dispatch = useAppDispatch();
 
   const [appFiles, setAppFiles] = useState<AppFile[]>([]);
-
+  const [reloadCount, setReloadCount] = useState(0);
+  
   const [filter] = useRouteQuery("filterBy");
   const [sorting] = useRouteQuery("sorting");
-  const [search] = useRouteQuery('search')
+  const [search] = useRouteQuery("search");
 
-  const debouncedSearch = useDebounce(search, 400)
+  const debouncedSearch = useDebounce(search, 400);
 
   const { toggleMediaViewer, setFiles, setCurrentFileIndex } =
     mediaViewerActions;
@@ -53,17 +54,20 @@ export default function Media() {
     const filesResponse = await GalleryService.getAll({
       type: filter || undefined,
       sorting: sorting || undefined,
-      search: debouncedSearch || undefined
+      search: debouncedSearch || undefined,
     });
     setAppFiles(filesResponse.data.result);
   }
 
   useEffect(() => {
     getFiles();
-  }, [sorting, filter, debouncedSearch]);
+  }, [sorting, filter, debouncedSearch, reloadCount]);
 
   return (
-    <BaseLayout title="All media">
+    <BaseLayout
+      triggerUpdate={() => setReloadCount((v) => v + 1)}
+      title="All media"
+    >
       <div className="grid grid-cols-4 gap-4">
         {appFiles.map((file, idx) => {
           return (

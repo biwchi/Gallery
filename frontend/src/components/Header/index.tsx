@@ -14,7 +14,7 @@ export default function Header() {
         <div className={styles.links}>
           {links.map((link, idx) => {
             return (
-              <a href={link.link} target='_blank'> 
+              <a key={idx} href={link.link} target='_blank'> 
                 <Icon key={idx} icon={link.icon} />
               </a>
             );

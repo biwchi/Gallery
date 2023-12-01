@@ -1,29 +1,37 @@
-$colors_theme: (
-  "primary": "purple",
-  "secondary": "purple-dark",
-  "accent": "purple-light",
-  "background": "black-light",
+@use "sass:color";
+
+$light_theme: (
+  text: #0a291f,
+  background: #e7f9f3,
+  primary: #29a37a,
+  secondary: #c1f0df,
+  accent: #2eb88a,
+);
+
+$dark_theme: (
+  text: #d6f5eb,
+  background: #061812,
+  primary: #5cd6ad,
+  secondary: #0f3e2c,
+  accent: #47d1a3,
 );
 
 $colors: (
-  "white": #ffffff,
+  white-light: #d6f5eb,
+  white: #ffffff,
 
-  "black": #000000,
-  "black-light": #121214,
+  black: #000000,
+  black-light: #121214,
 
-  "purple": #7400a8,
-  "purple-light": #9c4dff,
-  "purple-dark": #3f2052,
-
-  "gray-light": #a0a0a0,
+  gray-light: #a0a0a0,
 );
 
 $breakpoints: (
-  "sm": 640px,
-  "md": 768px,
-  "lg": 1024px,
-  "xl": 1280px,
-  "2xl": 1536px,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  2xl: 1536px,
 );
 
 @function HexToRGB($hex) {
@@ -38,24 +46,102 @@ $breakpoints: (
   }
 }
 
-:root {
-  @if $colors {
-    @if $colors_theme {
-      @each $key, $value in $colors_theme {
-        --color-#{$key}: var(--color-#{$value});
-        --color-#{$key}--rgb: var(--color-#{$value}--rgb);
+//Themes
+:root,
+[data-theme="light"] {
+  @if $light_theme {
+    @each $key, $value in $light_theme {
+      --color-#{$key}: #{$value};
+      --color-#{$key}--rgb: #{$value};
+    }
+  }
+}
+
+[data-theme="dark"] {
+  --primary-50: #05140f;
+    --primary-100: #0a291f;
+    --primary-200: #14523d;
+    --primary-300: #1f7a5c;
+    --primary-400: #29a37a;
+    --primary-500: #33cc99;
+    --primary-600: #5cd6ad;
+    --primary-700: #85e0c2;
+    --primary-800: #adebd6;
+    --primary-900: #d6f5eb;
+    --primary-950: #ebfaf5;
+
+  @if $dark_theme {
+    @each $key, $value in $dark_theme {
+      --color-#{$key}: #{$value};
+      --color-#{$key}--rgb: #{$value};
+
+      @for $i from 1 through 9 {
+        --color-#{$key}-#{$i * 100}: #{color.scale($value, $lightness: $i * 10%)};
       }
     }
+  }
+}
 
+//Colors
+:root {
+  @if $colors {
     @each $key, $value in $colors {
       --color-#{$key}: #{$value};
       --color-#{$key}--rgb: #{HexToRGB($value)};
     }
   }
+}
 
+//Utils
+:root {
   @if $breakpoints {
     @each $key, $value in $breakpoints {
-      --breakpoint-#{$key}: #{$value};
+      --bp-#{$key}: #{$value};
     }
   }
+
+  --space-base: 16px;
+  --space-xxxxs: calc(0.125 * var(--space-base));
+  --space-xxxs: calc(0.25 * var(--space-base));
+  --space-xxs: calc(0.375 * var(--space-base));
+  --space-xs: calc(0.5 * var(--space-base));
+  --space-sm: calc(0.75 * var(--space-base));
+  --space-md: calc(1.25 * var(--space-base));
+  --space-lg: calc(2 * var(--space-base));
+  --space-xl: calc(3.25 * var(--space-base));
+  --space-xxl: calc(5.25 * var(--space-base));
+  --space-xxxl: calc(8.5 * var(--space-base));
+  --space-xxxxl: calc(13.75 * var(--space-base));
+
+  --n-space-xxxxs: calc(-0.125 * var(--space-base));
+  --n-space-xxxs: calc(-0.25 * var(--space-base));
+  --n-space-xxs: calc(-0.375 * var(--space-base));
+  --n-space-xs: calc(-0.5 * var(--space-base));
+  --n-space-sm: calc(-0.75 * var(--space-base));
+  --n-space-md: calc(-1.25 * var(--space-base));
+  --n-space-lg: calc(-2 * var(--space-base));
+  --n-space-xl: calc(-3.25 * var(--space-base));
+  --n-space-xxl: calc(-5.25 * var(--space-base));
+  --n-space-xxxl: calc(-8.5 * var(--space-base));
+  --n-space-xxxxl: calc(-13.75 * var(--space-base));
+
+  --fs-xxs: clamp(0.51rem, -0.02vw + 0.52rem, 0.5rem);
+  --fs-xs: clamp(0.64rem, 0.05vw + 0.63rem, 0.67rem);
+  --fs-sm: clamp(0.8rem, 0.17vw + 0.76rem, 0.89rem);
+  --fs-base: clamp(1rem, 0.34vw + 0.91rem, 1.19rem);
+  --fs-md: clamp(1.25rem, 0.61vw + 1.1rem, 1.58rem);
+  --fs-lg: clamp(1.56rem, 1vw + 1.31rem, 2.11rem);
+  --fs-xl: clamp(1.95rem, 1.56vw + 1.56rem, 2.81rem);
+  --fs-xxl: clamp(2.44rem, 2.38vw + 1.85rem, 3.75rem);
+  --fs-xxxl: clamp(3.05rem, 3.54vw + 2.17rem, 5rem);
+}
+
+//Shadows
+:root {
+  --shadow-color: cl(var(--color-black), 0.1);
+
+  --shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px var(--shadow-color);
+
+  --shadow-md: 0 4px 6px -1px var(--shadow-color),
+    0 2px 4px -2px var(--shadow-color);
 }
