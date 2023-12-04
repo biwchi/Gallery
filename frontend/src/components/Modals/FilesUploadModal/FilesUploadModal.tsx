@@ -1,16 +1,18 @@
+import styles from "./index.module.scss";
+
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import { BaseButton } from "../Base/BaseButton";
-import BaseIconButton from "../Base/BaseIconButton";
-import { useRef, ChangeEvent, useState } from 'react';
-import { useLoading } from '@/hooks';
-import GalleryService from '@/services/GalleryService';
+import { BaseButton } from "../../Base/BaseButton";
+import BaseIconButton from "../../Base/BaseIconButton";
+import { useRef, ChangeEvent, useState } from "react";
+import { useLoading } from "@/hooks";
+import GalleryService from "@/services/GalleryService";
 
 export default function FilesUploadModal({
   toggleFileModal,
-  triggerUpdate
+  triggerUpdate,
 }: {
-  toggleFileModal: (val: boolean) => void,
-  triggerUpdate: () => void
+  toggleFileModal: (val: boolean) => void;
+  triggerUpdate: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,7 +36,7 @@ export default function FilesUploadModal({
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
     await createFiles(formData);
-    triggerUpdate()
+    triggerUpdate();
     toggleFileModal(false);
   }
 
@@ -44,7 +46,7 @@ export default function FilesUploadModal({
         ref={inputRef}
         multiple
         type="file"
-        className="invisible absolute h-0 w-0"
+        className={styles.input}
         onChange={onFileChange}
       />
       <BaseButton
@@ -53,19 +55,14 @@ export default function FilesUploadModal({
         text="Select files"
       />
 
-      <div className="my-2 flex max-w-md flex-col gap-1">
+      <div className={styles.files}>
         {files.map((file, idx) => {
           return (
-            <div
-              key={idx}
-              className="flex w-full items-center justify-between rounded-md p-1 transition hover:bg-secondary"
-            >
-              <div className="flex items-center gap-1 overflow-hidden">
-                <Icon className="text-xl" icon="ph:file-duotone" />
+            <div key={idx} className={styles.file}>
+              <div className={styles.name}>
+                <Icon className={styles.icon} icon="ph:file-duotone" />
 
-                <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                  {file.name}
-                </span>
+                <span>{file.name}</span>
               </div>
 
               <BaseIconButton

@@ -9,18 +9,15 @@
     box-shadow: 0 0 0 2px var(--color-secondary);
     padding: 0.5rem;
     padding-right: 1rem;
-
+    color: var(--color-text);
+    
     &.opened {
       box-shadow: 0 0 0 2px var(--color-primary);
     }
 
-    .value {
-      color: var((--color-white));
-    }
-
     .placeholder {
+      opacity: 0.5;
       user-select: none;
-      color: var(--color-gray-light);
     }
 
     .chevron,

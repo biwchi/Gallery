@@ -1,5 +1,7 @@
+import clsx from "clsx";
+import styles from "./index.module.scss";
+
 import { useState, type InputHTMLAttributes } from "react";
-import { twMerge } from "tailwind-merge";
 
 type BaseInputProps = {} & InputHTMLAttributes<HTMLInputElement>;
 
@@ -10,21 +12,16 @@ export default function BaseInput({ ...props }: BaseInputProps) {
   const onBlur = () => setFocused(false);
 
   return (
-    <div className="inline-block">
+    <div className={styles.inputBody}>
       <input
         {...props}
         onFocus={onFocus}
         onBlur={onBlur}
-        className="bg-transparent p-2 outline-none"
+        className={styles.input}
       />
 
-      <div className="h-0.5 w-full bg-secondary">
-        <div
-          className={twMerge(
-            "h-0.5 w-0 transition-all m-auto",
-            isFocused && "w-full bg-primary",
-          )}
-        />
+      <div className={styles.inputLine}>
+        <div className={clsx(styles.line, isFocused && styles.focused)} />
       </div>
     </div>
   );

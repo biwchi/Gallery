@@ -84,13 +84,7 @@ export default function BaseSelect<V extends Value, O extends Option>({
           clearable && computedValue && styles.clearable,
         )}
       >
-        <span
-          className={
-            computedValue
-              ? styles.value
-              : styles.placeholder
-          }
-        >
+        <span className={clsx(!computedValue && styles.placeholder)}>
           {computedValue || placeholder}
         </span>
 

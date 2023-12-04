@@ -1,0 +1,31 @@
+.input {
+  background-color: transparent;
+  padding: var(--space-xs);
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-text--50);
+  }
+}
+
+.inputLine {
+  height: 2px;
+  width: 100%;
+  background-color: var(--color-secondary);
+
+  .line {
+    height: 2px;
+    width: 0;
+    margin: 0 auto;
+    transition: 0.15s ease;
+
+    &.focused {
+      width: 100%;
+      background-color: var(--color-primary);
+    }
+  }
+}
+
+.inputBody {
+  display: inline-block;
+}

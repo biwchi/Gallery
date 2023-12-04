@@ -1,5 +1,11 @@
 @use "./reset";
+
+//Variables
 @use "./variables";
+
+//Utils
+@use './utils/animation';
+@use './utils/functions';
 
 //Components 
 @use "./components/range";

@@ -120,19 +120,16 @@ export default function AudioPlayer() {
         <div className={styles.playerBody}>
           <div className={styles.buttons}>
             <BaseIconButton
-              variant={"white"}
               size={"bigIcon"}
               icon="material-symbols:skip-previous-rounded"
               onClick={() => dispatch(decrementIndex())}
             />
             <BaseIconButton
-              variant={"white"}
               size={"bigIcon"}
               onClick={() => togglePaused()}
               icon={isPaused ? icon.pause : icon.play}
             />
             <BaseIconButton
-              variant={"white"}
               size={"bigIcon"}
               icon="material-symbols:skip-next-rounded"
               onClick={() => dispatch(incrementIndex())}

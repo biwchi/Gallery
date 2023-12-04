@@ -13,7 +13,7 @@
   z-index: 50;
   min-width: 30rem;
   border-radius: 0.75rem;
-  background-color: var(--black);
+  background-color: var(--color-background);
   padding: 1rem;
 }
 
@@ -32,6 +32,6 @@
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: var(--black-04);
+  background-color: var(--color-black--30);
   backdrop-filter: blur(2px);
 }

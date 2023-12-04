@@ -28,11 +28,11 @@ input[type="range"]::-webkit-slider-thumb {
   background-color: var(--color-white-light);
   padding: 0;
   opacity: 0;
-  transition: 0.3s ease;
+  transition: 0.15s ease;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
   height: 100%;
   border-radius: 9999px;
-  background-color: var(--color-secondary-100);
+  background-color: var(--color-primary-200);
 }
