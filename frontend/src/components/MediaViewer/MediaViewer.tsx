@@ -1,23 +1,24 @@
-import "./MediaViewer.css";
+import './MediaViewer.scss'
+import styles from "./MediaViewer.module.scss";
 
 import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
 import useTransition from "react-transition-state";
-import MediaViewerSlide from "./MediaViewerSlide";
 
 import {
   mediaViewerActions,
   selectMediaViewer,
 } from "@/store/mediaViewerSlice";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import { twMerge } from "tailwind-merge";
 import { AppFile } from "@/services/types";
+import clsx from "clsx";
+import { MediaViewerSlide } from "./MediaViewerSlide";
 
 export type Slide = AppFile | undefined;
 
-export default function MediaViewer() {
+export function MediaViewer() {
   const mediaViewer = useAppSelector(selectMediaViewer);
   const dispatch = useAppDispatch();
 
@@ -88,17 +89,16 @@ export default function MediaViewer() {
       {state.isMounted && slide && (
         <ReactPortal wrapperId="mediaViewer">
           <div
-            className={twMerge(
-              "fixed left-0 top-0 h-screen w-screen bg-black/20 backdrop-blur-[2px]",
-              `media-viewer ${state.status}`,
-            )}
+            className={clsx(styles.mediaViewer, `media-viwer-animation ${state.status}`)}
           >
-            <div className="to-black/05 relative z-50 flex items-center justify-between bg-gradient-to-b from-black p-5">
+            <div className={styles.header}>
               <h1>{slide.title}</h1>
 
-              <span className='flex-1 text-center text-gray-500'>{`${currentFileIndex + 1}/${files.length}`}</span>
+              <span className={styles.index}>{`${currentFileIndex + 1}/${
+                files.length
+              }`}</span>
 
-              <div className="flex gap-2">
+              <div className={styles.actions}>
                 <BaseIconButton icon="ph:download-simple" />
                 <BaseIconButton
                   onClick={() => dispatch(decrementZoom())}
@@ -143,10 +143,10 @@ function ButtonNavigation({
   return (
     <button
       onClick={onClick}
-      className={twMerge(
-        "absolute top-0 z-40 flex h-full cursor-pointer items-center px-16 text-4xl opacity-0 transition hover:opacity-100 active:bg-black/10",
-        disabled && "invisible opacity-0",
-        isRight ? "right-0" : "left-0",
+      className={clsx(
+        styles.navigationButton,
+        disabled && styles.disabled,
+        isRight && styles.right,
       )}
     >
       <Icon icon={isRight ? "ph:arrow-right" : "ph:arrow-left"} />

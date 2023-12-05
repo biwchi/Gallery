@@ -1,0 +1,92 @@
+@import "@scss/utils";
+
+.card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid var(--color-secondary--80);
+
+  .type {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background-color: var(--color-primary-200);
+    padding: var(--space-xs);
+    border-radius: 3px;
+    color: var(--color-text);
+    font-size: var(--fs-md);
+  }
+
+  .content {
+    pointer-events: none;
+    position: relative;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: end;
+    background: linear-gradient(180deg, #00000000 20%, var(--color-background) 100%);
+
+    .body {
+      padding: var(--space-sm) var(--space-base);
+    }
+
+    .title {
+      overflow: hidden;
+      word-break: break-all;
+      font-size: var(--fs-base);
+      @include line-clamp(2)
+    }
+
+    .date {
+      color: var(--color-text--50);
+    }
+  }
+}
+
+.image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xxl);
+  background-color: var(--color-primary-100);
+
+  &:hover {
+    .iconType {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .iconAction {
+      position: relative;
+      opacity: 1;
+    }
+  }
+
+  .iconType,
+  .iconAction {
+    transition:
+      opacity,
+      0.15s ease;
+  }
+
+  .iconAction {
+    position: absolute;
+    opacity: 0;
+  }
+}

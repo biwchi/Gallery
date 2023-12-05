@@ -1,4 +1,4 @@
-import styles from "./index.module.scss";
+import styles from "./FilesUploadModal.module.scss";
 
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { BaseButton } from "../../Base/BaseButton";
@@ -7,7 +7,7 @@ import { useRef, ChangeEvent, useState } from "react";
 import { useLoading } from "@/hooks";
 import GalleryService from "@/services/GalleryService";
 
-export default function FilesUploadModal({
+export function FilesUploadModal({
   toggleFileModal,
   triggerUpdate,
 }: {
@@ -41,7 +41,7 @@ export default function FilesUploadModal({
   }
 
   return (
-    <div>
+    <>
       <input
         ref={inputRef}
         multiple
@@ -82,6 +82,6 @@ export default function FilesUploadModal({
         onClick={uploadFiles}
         text="Upload files"
       />
-    </div>
+    </>
   );
 }

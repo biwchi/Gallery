@@ -1,9 +1,11 @@
+import styles from './Default.module.scss'
+
 import { Outlet } from "react-router-dom";
 import Header from "@/components/Header";
 
-export default function DefaultLayout() {
+export function DefaultLayout() {
   return (
-    <div className="max-w-screen-xl m-auto px-4">
+    <div className={styles.wrapper}>
       <Header />
       <Outlet />
     </div>

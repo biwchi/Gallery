@@ -1,10 +1,10 @@
 import AudioPlayer from "@/components/AudioPlayer";
-import MediaViewer from "@/components/MediaViewer/MediaViewer";
 
 import { useAppSelector } from "./hooks";
 import { AppRouter } from "./router";
 import { selectTheme } from "./store/themeSlice";
 import { useEffect } from "react";
+import { MediaViewer } from "./components/MediaViewer";
 
 export default function App() {
   const theme = useAppSelector(selectTheme);

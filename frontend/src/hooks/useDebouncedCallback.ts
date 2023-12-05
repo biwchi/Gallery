@@ -7,15 +7,12 @@ export function useDebouncedCallback<A extends any[]>(
   const argsRef = useRef<A>();
   const timeout = useRef<ReturnType<typeof setTimeout>>();
 
-  const clear = () =>
-    timeout.current !== undefined ? clearTimeout(timeout.current) : undefined;
+  useEffect(() => clearTimeout(timeout.current), [])
 
-  useEffect(() => clear(), []);
-
-  return function debouncedCallback(...args: A) {
+  return function (...args: A) {
     argsRef.current = args;
 
-    clear();
+    clearTimeout(timeout.current);
 
     timeout.current = setTimeout(() => {
       if (argsRef.current) fn(...argsRef.current);

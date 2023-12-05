@@ -1,5 +1,7 @@
+import styles from "./MediaViwerSlide.module.scss";
+
 import { useBreakpoints } from "@/hooks/useBreakpoints";
-import { Slide } from "./MediaViewer";
+import { Slide } from "../MediaViewer";
 import { breakpointsWidth } from "@/common";
 import { useAppDispatch, useAppSelector } from "@/hooks/useStore";
 import {
@@ -7,7 +9,7 @@ import {
   selectMediaViewer,
 } from "@/store/mediaViewerSlice";
 import { useEffect, useRef } from "react";
-import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
 
 type MediaViewerSlideProps = {
   slide: Slide;
@@ -28,7 +30,7 @@ const initialPosition = {
   lastY: 0,
 };
 
-export default function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
+export function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
   const mediaViewer = useAppSelector(selectMediaViewer);
   const dispatch = useAppDispatch();
 
@@ -79,6 +81,7 @@ export default function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
     }
 
     return {
+      transitionDuration: `${zoomTransitionDuration}ms`,
       transform: `translate3d(${deltaPosition.current.lastX}px, ${deltaPosition.current.lastY}px, 0) scale(${zoom})`,
     };
   }
@@ -123,7 +126,7 @@ export default function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
       if (!isMoveable.y) newPosition.y = 0;
 
       slide.style.transform = `translate3d(${newPosition.x}px, ${newPosition.y}px, 0) scale(${zoom})`;
-      slide.style.transition = "none";
+      slide.style.transitionDuration = "0ms";
     }
 
     function mouseUp(e: MouseEvent) {
@@ -134,7 +137,7 @@ export default function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
       isPressed.current = false;
       deltaPosition.current.lastX = e.clientX - deltaPosition.current.x + lastX;
       deltaPosition.current.lastY = e.clientY - deltaPosition.current.y + lastY;
-      slide.style.transition = "";
+      slide.style.transition = `${zoomTransitionDuration}ms`;
     }
 
     if (isMoveable.moveable) {
@@ -153,28 +156,21 @@ export default function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
   }, [isMoveable, zoom]);
 
   return (
-    <div
-      ref={slideRef}
-      style={slideStyle()}
-      className={twMerge(
-        "absolute bottom-0 left-0 right-0 top-0 flex h-full transition-transform",
-        `duration-[${zoomTransitionDuration}]`,
-      )}
-    >
+    <div ref={slideRef} style={slideStyle()} className={styles.slide}>
       {slide && (
-        <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full">
-          <div className="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center py-20">
+        <div className={styles.body}>
+          <div className={styles.wrapper}>
             <div
               ref={mediaPlayerContentRef}
-              className={twMerge(
-                isMoveable.moveable ? "cursor-move" : "cursor-default",
-                "max-h-full",
+              className={clsx(
+                styles.content,
+                isMoveable.moveable && styles.moveable,
               )}
             >
               {slide.type === "image" && (
                 <img
                   draggable="false"
-                  className="max-h-full"
+                  className={styles.image}
                   style={{
                     maxWidth: imageWidth(),
                     maxHeight: `${windowSize.height - 160}px`,
@@ -185,7 +181,7 @@ export default function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
               {slide.type === "video" && (
                 <video
                   style={{ maxWidth: imageWidth() }}
-                  className="h-full"
+                  className={styles.video}
                   loop
                   controls
                   src="https://www.w3schools.com/html/mov_bbb.mp4"

@@ -12,17 +12,13 @@ export default function BaseInput({ ...props }: BaseInputProps) {
   const onBlur = () => setFocused(false);
 
   return (
-    <div className={styles.inputBody}>
+    <div className={clsx(styles.inputBody, isFocused && styles.focused)}>
       <input
         {...props}
         onFocus={onFocus}
         onBlur={onBlur}
         className={styles.input}
       />
-
-      <div className={styles.inputLine}>
-        <div className={clsx(styles.line, isFocused && styles.focused)} />
-      </div>
     </div>
   );
 }

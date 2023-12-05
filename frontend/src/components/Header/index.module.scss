@@ -23,8 +23,9 @@
 
 .links a {
   margin: 0 0.375rem;
-}
+  color: var(--color-text);
 
-.links a:hover {
-  color: var(--primary);
-}
+  &:hover {
+    color: var(--color-primary);
+  }
+} 

@@ -1,8 +1,8 @@
-import styles from "./index.module.css";
+import styles from "./Modal.module.scss";
 
 import { useClickOutside } from "@/hooks";
-import BaseIconButton from "../Base/BaseIconButton";
-import ReactPortal from "../ReactPortal";
+import BaseIconButton from "../../Base/BaseIconButton";
+import ReactPortal from "../../ReactPortal";
 import { useEffect, useRef } from "react";
 
 type ModalProps = {
@@ -13,7 +13,7 @@ type ModalProps = {
   children: JSX.Element;
 };
 
-export default function Modal({
+export function Modal({
   children,
   title,
   noHeader,
@@ -43,8 +43,7 @@ export default function Modal({
               {!noHeader && (
                 <div className={styles.header}>
                   <h1 className={styles.headerTitle}>{title}</h1>
-
-                  <BaseIconButton onClick={handleClose} icon="ph:x" />
+                  <BaseIconButton onClick={handleClose} size={'default'} icon="ph:x" />
                 </div>
               )}
 

@@ -26,7 +26,7 @@ function buildMulterConfig(
 ) {
   const fileDest = configService.get('FILE_STORAGE') || 'uploads';
   const destination = path.join(__dirname, '..', fileDest, options.path || '');
-
+  
   const multerOptions: MulterOptions = {
     storage: diskStorage({
       destination: (_, __, cb) => {

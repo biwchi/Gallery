@@ -1,5 +1,5 @@
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 
 export default function Header() {
   const links = [

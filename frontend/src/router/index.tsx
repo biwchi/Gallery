@@ -1,9 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Media from "@/pages/Media";
-import DefaultLayout from "@/layouts/Default";
-
-// import ProtectedRoute from './ProtectedRoute';
+import { Media } from "@/pages/Media";
+import { DefaultLayout } from "@/layouts/Default";
 
 function RoutesRouter() {
   return (

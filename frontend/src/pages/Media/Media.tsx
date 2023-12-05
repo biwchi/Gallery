@@ -1,5 +1,6 @@
+import styles from "./Media.module.scss";
 import GalleryCard from "@/components/Gallery/GalleryCard";
-import BaseLayout from "@/layouts/BaseLayout";
+import { ActionLayout } from "@/layouts/ActionLayout";
 
 import { AppFile } from "@/services/types";
 import { useAppDispatch } from "@/hooks/useStore";
@@ -10,12 +11,12 @@ import { audioPlayerActions } from "@/store/audioPlayerSlice";
 import { useRouteQuery } from "@/hooks";
 import { useDebounce } from "@/hooks/useDebounce";
 
-export default function Media() {
+export function Media() {
   const dispatch = useAppDispatch();
 
   const [appFiles, setAppFiles] = useState<AppFile[]>([]);
   const [reloadCount, setReloadCount] = useState(0);
-  
+
   const [filter] = useRouteQuery("filterBy");
   const [sorting] = useRouteQuery("sorting");
   const [search] = useRouteQuery("search");
@@ -64,11 +65,8 @@ export default function Media() {
   }, [sorting, filter, debouncedSearch, reloadCount]);
 
   return (
-    <BaseLayout
-      triggerUpdate={() => setReloadCount((v) => v + 1)}
-      title="All media"
-    >
-      <div className="grid grid-cols-4 gap-4">
+    <ActionLayout triggerUpdate={() => setReloadCount((v) => v + 1)}>
+      <div className={styles.wrapper}>
         {appFiles.map((file, idx) => {
           return (
             <GalleryCard
@@ -79,6 +77,6 @@ export default function Media() {
           );
         })}
       </div>
-    </BaseLayout>
+    </ActionLayout>
   );
 }

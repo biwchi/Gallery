@@ -1,0 +1,12 @@
+.media-viwer-animation {
+  transition: opacity 0.3s;
+
+  &.preEnter,
+  &.exiting {
+    opacity: 0;
+  }
+
+  &.exited {
+    display: none;
+  }
+}

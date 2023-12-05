@@ -1,4 +1,3 @@
-import "@/assets/css/index.css";
 import "@/assets/scss/index.scss"
 
 import ReactDOM from "react-dom/client";

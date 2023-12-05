@@ -23,6 +23,7 @@ h5,
 h6,
 p {
   font-weight: 400;
+  font-size: inherit;
 }
 
 img,
@@ -36,6 +37,13 @@ button,
 textarea,
 select {
   font: inherit;
+  border: none;
+  background-color: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
 }
 
 @media (prefers-reduced-motion: reduce) {

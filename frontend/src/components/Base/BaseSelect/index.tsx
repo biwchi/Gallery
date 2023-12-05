@@ -19,6 +19,7 @@ export default function BaseSelect<V extends Value, O extends Option>({
   placeholder = "Select",
 }: BaseSelectProps<V, O>) {
   const selectRef = useRef<HTMLDivElement>(null);
+  const [isFocused, toggleFocused] = useToggle(false)
   const [isOpened, toggleOpened] = useToggle(false);
 
   const clear = (e: React.MouseEvent) => (e.stopPropagation(), onChange(null));
@@ -81,6 +82,7 @@ export default function BaseSelect<V extends Value, O extends Option>({
         className={clsx(
           styles.input,
           isOpened && styles.opened,
+          isFocused && styles.focused,
           clearable && computedValue && styles.clearable,
         )}
       >

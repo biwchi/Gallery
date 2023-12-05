@@ -1,3 +1,5 @@
+import styles from "./index.module.scss"
+
 import { AppFile, FileType } from "@/services/types";
 import { useToggle } from "@/hooks";
 import { Icon } from "@iconify-icon/react";
@@ -23,7 +25,7 @@ export default function GalleryCard({
   return (
     <div
       onClick={onClick}
-      className="relative aspect-square cursor-pointer overflow-hidden rounded-md border border-gray-600"
+      className={styles.card}
     >
       <PreviewPlaceholder
         fileTitle={file.title}
@@ -33,17 +35,17 @@ export default function GalleryCard({
 
       {showType && (
         <Icon
-          className="absolute left-2 top-2 rounded-full bg-black p-2.5 text-2xl"
+          className={styles.type}
           icon={icons[file.type]}
         />
       )}
 
-      <div className="pointer-events-none relative flex h-full w-full flex-col justify-end bg-gradient-to-b from-transparent to-black/70">
-        <div className="px-5 py-3">
-          <p title={file.title} className="line-clamp-2 break-all text-lg">
+      <div className={styles.content}>
+        <div className={styles.body}>
+          <p title={file.title} className={styles.title}>
             {file.title}
           </p>
-          <span className="text-gray-300">{formatDate(file.dateUploaded)}</span>
+          <span className={styles.date}>{formatDate(file.dateUploaded)}</span>
         </div>
       </div>
     </div>
@@ -74,18 +76,18 @@ function PreviewPlaceholder({
       {preview !== null && validImage ? (
         <img
           onError={() => toggleValidImage(false)}
-          className="absolute left-0 top-0 h-full w-full object-cover"
+          className={styles.image}
           src={preview}
           alt={fileTitle}
         />
       ) : (
-        <div className="group absolute left-0 top-0 flex h-full w-full items-center justify-center bg-gray-800 text-8xl">
+        <div className={styles.placeholder}>
           <Icon
-            className="transition group-hover:absolute group-hover:opacity-0"
+            className={styles.iconType}
             icon={icons[type]}
           />
           <Icon
-            className="absolute opacity-0 transition group-hover:relative group-hover:opacity-100"
+            className={styles.iconAction}
             icon={type !== "image" ? "ph:play" : "ph:eye"}
           />
         </div>
