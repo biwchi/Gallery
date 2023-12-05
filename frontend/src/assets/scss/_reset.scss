@@ -42,9 +42,10 @@ select {
   color: inherit;
 }
 
-button {
+button:not([disabled]) {
   cursor: pointer;
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   *,

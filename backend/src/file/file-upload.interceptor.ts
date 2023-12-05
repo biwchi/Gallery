@@ -25,13 +25,19 @@ function buildMulterConfig(
   options: FileUploadInterceptorOptions,
 ) {
   const fileDest = configService.get('FILE_STORAGE') || 'uploads';
-  const destination = path.join(__dirname, '..', fileDest, options.path || '');
-  
+  const destination = path.join(
+    __dirname,
+    '..',
+    '..',
+    fileDest,
+    options.path || '',
+  );
+
   const multerOptions: MulterOptions = {
     storage: diskStorage({
       destination: (_, __, cb) => {
         if (!fs.existsSync(destination)) {
-          fs.mkdirSync(destination);
+          fs.mkdirSync(destination, { recursive: true });
         }
 
         cb(null, destination);
