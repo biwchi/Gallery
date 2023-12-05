@@ -1,10 +1,10 @@
 import styles from "./FilesUploadModal.module.scss";
 
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import { BaseButton } from "../../Base/BaseButton";
-import BaseIconButton from "../../Base/BaseIconButton";
 import { useRef, ChangeEvent, useState } from "react";
 import { useLoading } from "@/hooks";
+import { Button } from '@/components/UI/Button';
+import { IconButton } from '@/components/UI/IconButton';
 import GalleryService from "@/services/GalleryService";
 
 export function FilesUploadModal({
@@ -49,7 +49,7 @@ export function FilesUploadModal({
         className={styles.input}
         onChange={onFileChange}
       />
-      <BaseButton
+      <Button
         onClick={() => inputRef.current?.click()}
         display="block"
         text="Select files"
@@ -65,7 +65,7 @@ export function FilesUploadModal({
                 <span>{file.name}</span>
               </div>
 
-              <BaseIconButton
+              <IconButton
                 onClick={() => removeFile(idx)}
                 size={"small"}
                 icon="ph:x"
@@ -75,7 +75,7 @@ export function FilesUploadModal({
         })}
       </div>
 
-      <BaseButton
+      <Button
         display="block"
         disabled={!files.length}
         loading={isLoading}

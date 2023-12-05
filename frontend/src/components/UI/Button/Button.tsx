@@ -1,4 +1,4 @@
-import styles from "./index.module.scss";
+import styles from "./Button.module.scss";
 
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { VariantProps, cva } from "class-variance-authority";
@@ -28,7 +28,7 @@ const button = cva(styles.button, {
   },
 });
 
-type BaseButtonProps = {
+type ButtonProps = {
   text: string;
   leftIcon?: string;
   rightIcon?: string;
@@ -37,7 +37,7 @@ type BaseButtonProps = {
 } & ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof button>;
 
-export function BaseButton({
+export function Button({
   leftIcon,
   rightIcon,
   loading,
@@ -48,7 +48,7 @@ export function BaseButton({
   display,
   className,
   ...props
-}: BaseButtonProps) {
+}: ButtonProps) {
   return (
     <button
       {...props}

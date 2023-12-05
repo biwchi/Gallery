@@ -1,11 +1,11 @@
 import styles from './ActionLayout.module.scss'
 
-import { Modal } from "../../components/Modals/Modal";
-import { BaseButton } from "../../components/Base/BaseButton";
-import BaseInput from "../../components/Base/BaseInput";
 import { useRouteQuery, useToggle } from "@/hooks";
-import BaseSelect from "@/components/Base/BaseSelect";
 import { FilesUploadModal } from "@/components/Modals/FilesUploadModal";
+import { Button } from '@/components/UI/Button';
+import { Input } from '@/components/UI/Input';
+import { Select } from '@/components/UI/Select';
+import { Modal } from '@/components/Modals/Modal';
 
 type BaseLayoutProps = {
   children: JSX.Element;
@@ -48,13 +48,13 @@ export function ActionLayout({
 
       <div className={styles.actions}>
         <div className={styles.inputs}>
-          <BaseInput
+          <Input
             value={search || ""}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
           />
 
-          <BaseSelect
+          <Select
             placeholder="Select sort method"
             value={sorting || null}
             options={sortOptions}
@@ -66,7 +66,7 @@ export function ActionLayout({
             }}
           />
 
-          <BaseSelect
+          <Select
             placeholder="Filter by type"
             value={filter || null}
             options={filterOptions}
@@ -79,7 +79,7 @@ export function ActionLayout({
           />
         </div>
 
-        <BaseButton
+        <Button
           onClick={() => toggleFileModal()}
           text="Upload new files"
           leftIcon="ph:upload"

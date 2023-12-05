@@ -1,13 +1,13 @@
-import styles from "./index.module.scss";
+import styles from "./Select.module.scss";
 import clsx from "clsx";
 
 import { useClickOutside, useToggle } from "@/hooks";
-import React, { useRef } from "react";
-import { BaseSelectProps, Option, Value } from "./types";
+import { SelectProps, Option, Value } from "./types";
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import BaseIconButton from "../BaseIconButton";
+import { IconButton } from '@/components/UI/IconButton';
+import React, { useRef } from "react";
 
-export default function BaseSelect<V extends Value, O extends Option>({
+export function Select<V extends Value, O extends Option>({
   options,
   value,
   onChange,
@@ -17,7 +17,7 @@ export default function BaseSelect<V extends Value, O extends Option>({
   label,
   clearable,
   placeholder = "Select",
-}: BaseSelectProps<V, O>) {
+}: SelectProps<V, O>) {
   const selectRef = useRef<HTMLDivElement>(null);
   const [isFocused, toggleFocused] = useToggle(false)
   const [isOpened, toggleOpened] = useToggle(false);
@@ -97,7 +97,7 @@ export default function BaseSelect<V extends Value, O extends Option>({
 
         {clearable && computedValue && (
           <div className={styles.clear}>
-            <BaseIconButton onClick={clear} icon="ph-x" size={"small"} />
+            <IconButton onClick={clear} icon="ph-x" size={"small"} />
           </div>
         )}
       </div>

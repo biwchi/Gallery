@@ -1,5 +1,5 @@
 import styles from "./Media.module.scss";
-import GalleryCard from "@/components/Gallery/GalleryCard";
+import {GalleryCard} from "@/components/Gallery/GalleryCard";
 import { ActionLayout } from "@/layouts/ActionLayout";
 
 import { AppFile } from "@/services/types";

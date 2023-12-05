@@ -1,9 +1,9 @@
 import styles from "./Modal.module.scss";
 
 import { useClickOutside } from "@/hooks";
-import BaseIconButton from "../../Base/BaseIconButton";
-import ReactPortal from "../../ReactPortal";
 import { useEffect, useRef } from "react";
+import ReactPortal from "../../ReactPortal";
+import { IconButton } from '@/components/UI/IconButton';
 
 type ModalProps = {
   title?: string;
@@ -43,7 +43,7 @@ export function Modal({
               {!noHeader && (
                 <div className={styles.header}>
                   <h1 className={styles.headerTitle}>{title}</h1>
-                  <BaseIconButton onClick={handleClose} size={'default'} icon="ph:x" />
+                  <IconButton onClick={handleClose} size={'default'} icon="ph:x" />
                 </div>
               )}
 

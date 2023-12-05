@@ -1,4 +1,4 @@
-import styles from "./index.module.scss"
+import styles from "./GalleryCard.module.scss"
 
 import { AppFile, FileType } from "@/services/types";
 import { useToggle } from "@/hooks";
@@ -11,7 +11,7 @@ type GalleryCardProps = {
   onClick?: () => void;
 };
 
-export default function GalleryCard({
+export function GalleryCard({
   file,
   onClick,
   showType = true,

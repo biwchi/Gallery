@@ -1,9 +1,9 @@
 import clsx from "clsx";
-import styles from "./index.module.scss";
+import styles from "./Range.module.scss";
 
 import { ChangeEvent } from "react";
 
-type BaseRangeProps = {
+type RangeProps = {
   value: string | number;
   maxValue: string | number;
   onPress?: (isPressed: boolean) => void;
@@ -11,13 +11,13 @@ type BaseRangeProps = {
   isLoading?: boolean;
 };
 
-export function BaseRange({
+export function Range({
   value,
   maxValue,
   onChange,
   onPress,
   isLoading,
-}: BaseRangeProps) {
+}: RangeProps) {
   function onChangeInput(e: ChangeEvent<HTMLInputElement>) {
     onChange(Number(e.target.value));
   }

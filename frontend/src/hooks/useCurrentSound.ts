@@ -1,6 +1,5 @@
 import { AppFile } from "@/services/types";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from ".";
 import { useSelector } from "react-redux";
 import { selectAudioPlayer } from "@/store/audioPlayerSlice";
 
@@ -17,7 +16,6 @@ const initialSound: AppFile = {
 };
 
 export function useCurrentSound() {
-  // const dispatch = useAppDispatch();
   const audioPlayer = useSelector(selectAudioPlayer);
 
   const [currentSound, setCurrentSound] = useState<AppFile>(initialSound);

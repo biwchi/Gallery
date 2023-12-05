@@ -1,7 +1,6 @@
-import styles from "./index.module.scss";
+import styles from "./AudioPlayer.module.scss";
 
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useToggle } from "@/hooks";
@@ -11,9 +10,10 @@ import {
   selectAudioPlayer,
 } from "@/store/audioPlayerSlice";
 import { getTimeFromSeconds } from "@/utils";
-import { BaseRange } from "../Base/BaseRange";
 import { useCurrentSound } from "@/hooks/useCurrentSound";
 import clsx from "clsx";
+import { IconButton } from '../UI/IconButton';
+import { Range } from '../UI/Range';
 
 const icon = {
   pause: "line-md:pause-to-play-filled-transition",
@@ -28,7 +28,7 @@ const initialPlayerState = {
   bufferedTime: 0,
 };
 
-export default function AudioPlayer() {
+export function AudioPlayer() {
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const interval = useRef<NodeJS.Timeout | undefined>();
 
@@ -119,17 +119,17 @@ export default function AudioPlayer() {
 
         <div className={styles.playerBody}>
           <div className={styles.buttons}>
-            <BaseIconButton
+            <IconButton
               size={"bigIcon"}
               icon="material-symbols:skip-previous-rounded"
               onClick={() => dispatch(decrementIndex())}
             />
-            <BaseIconButton
+            <IconButton
               size={"bigIcon"}
               onClick={() => togglePaused()}
               icon={isPaused ? icon.pause : icon.play}
             />
-            <BaseIconButton
+            <IconButton
               size={"bigIcon"}
               icon="material-symbols:skip-next-rounded"
               onClick={() => dispatch(incrementIndex())}
@@ -217,7 +217,7 @@ function AudioProgressBar({
   }, [currentTime]);
 
   return (
-    <BaseRange
+    <Range
       isLoading={isLoading}
       value={time}
       maxValue={duration}
@@ -243,7 +243,7 @@ function AudioVolume({
 
   return (
     <div className={styles.slider}>
-      <BaseRange
+      <Range
         value={volume}
         maxValue={100}
         onChange={(newValue) => onChange(newValue)}

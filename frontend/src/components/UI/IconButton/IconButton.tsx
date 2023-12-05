@@ -1,4 +1,4 @@
-import styles from "./index.module.scss";
+import styles from "./IconButton.module.scss";
 
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { VariantProps, cva } from "class-variance-authority";
@@ -28,18 +28,18 @@ const iconButton = cva(styles.button, {
   defaultVariants: { variant: "transparent", size: "default", shape: "circle" },
 });
 
-type BaseIconButtonProps = {
+type IconButtonProps = {
   icon: string;
 } & ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof iconButton>;
 
-export default function BaseIconButton({
+export function IconButton({
   variant,
   size,
   shape,
   icon = "ph:placeholder",
   ...props
-}: BaseIconButtonProps) {
+}: IconButtonProps) {
   return (
     <button {...props}>
       <Icon className={iconButton({ shape, variant, size })} icon={icon} />

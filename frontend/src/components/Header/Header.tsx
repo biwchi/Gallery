@@ -1,7 +1,7 @@
 import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import styles from "./index.module.scss";
+import styles from "./Header.module.scss";
 
-export default function Header() {
+export function Header() {
   const links = [
     { icon: "mdi:github", link: "https://github.com/biwchi/Gallery" },
   ];

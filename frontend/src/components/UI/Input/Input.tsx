@@ -1,11 +1,11 @@
 import clsx from "clsx";
-import styles from "./index.module.scss";
+import styles from "./Input.module.scss";
 
 import { useState, type InputHTMLAttributes } from "react";
 
-type BaseInputProps = {} & InputHTMLAttributes<HTMLInputElement>;
+type InputProps = {} & InputHTMLAttributes<HTMLInputElement>;
 
-export default function BaseInput({ ...props }: BaseInputProps) {
+export function Input({ ...props }: InputProps) {
   const [isFocused, setFocused] = useState(false);
 
   const onFocus = () => setFocused(true);

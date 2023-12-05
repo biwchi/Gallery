@@ -37,7 +37,7 @@ type ValueProps<V, O> = V extends string | number | null
       valueLabel: keyof V;
     };
 
-export type BaseSelectProps<V, O> = {
+export type SelectProps<V, O> = {
   label?: string;
   placeholder?: string;
   clearable?: boolean

@@ -1,7 +1,6 @@
 import './MediaViewer.scss'
 import styles from "./MediaViewer.module.scss";
 
-import BaseIconButton from "../Base/BaseIconButton";
 import ReactPortal from "../ReactPortal";
 import useTransition from "react-transition-state";
 
@@ -15,6 +14,7 @@ import { Icon } from "@iconify-icon/react/dist/iconify.js";
 import { AppFile } from "@/services/types";
 import clsx from "clsx";
 import { MediaViewerSlide } from "./MediaViewerSlide";
+import { IconButton } from '../UI/IconButton';
 
 export type Slide = AppFile | undefined;
 
@@ -99,16 +99,16 @@ export function MediaViewer() {
               }`}</span>
 
               <div className={styles.actions}>
-                <BaseIconButton icon="ph:download-simple" />
-                <BaseIconButton
+                <IconButton icon="ph:download-simple" />
+                <IconButton
                   onClick={() => dispatch(decrementZoom())}
                   icon="ph:magnifying-glass-minus"
                 />
-                <BaseIconButton
+                <IconButton
                   onClick={() => dispatch(incrementZoom())}
                   icon="ph:magnifying-glass-plus"
                 />
-                <BaseIconButton onClick={handleClose} icon="ph:x" />
+                <IconButton onClick={handleClose} icon="ph:x" />
               </div>
             </div>
 
