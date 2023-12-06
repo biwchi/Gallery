@@ -1,7 +1,8 @@
 import { join } from 'path';
 
 export const getViewUrl = (
+  endpoint: string = 'file',
   url: string,
   fileName: string,
   additionalPath?: string,
-) => `${url}/file/${join(fileName, additionalPath || '')}`;
+) => `${url}/${endpoint}/${join(fileName, additionalPath || '')}`;

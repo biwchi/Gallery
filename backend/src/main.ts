@@ -17,7 +17,7 @@ const docsPrefix = `${appPrefix}/docs`;
 const createUploadsDir = (directory: string) => {
   const uloadsDir = path.join(process.cwd(), directory);
 
-  if (fs.existsSync(uloadsDir)) {
+  if (!fs.existsSync(uloadsDir)) {
     fs.mkdirSync(uloadsDir);
   }
 };
@@ -26,7 +26,6 @@ function buildSwaggerDocs(app: NestApplication, prefix: string) {
   const config = new DocumentBuilder()
     .setTitle('Gallery')
     .setDescription('Application for storing and using media files')
-    .setBasePath('api')
     .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .build();
 

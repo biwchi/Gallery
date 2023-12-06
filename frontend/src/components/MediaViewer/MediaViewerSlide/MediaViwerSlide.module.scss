@@ -7,6 +7,7 @@
   display: flex;
   height: 100%;
   transition: transform ease;
+  user-select: none;
 
   .body .wrapper {
     position: absolute;

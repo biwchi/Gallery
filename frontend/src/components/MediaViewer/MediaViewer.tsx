@@ -49,6 +49,10 @@ export function MediaViewer() {
   const slideNext = () => dispatch(currentFileIndexIncrement());
   const slidePrev = () => dispatch(currentFileIndexDecrement());
 
+  function download() {
+    window.open(slide?.downloadUrl)
+  }
+
   function slidesUpdate() {
     return setSlide(files[currentFileIndex]);
   }
@@ -99,7 +103,7 @@ export function MediaViewer() {
               }`}</span>
 
               <div className={styles.actions}>
-                <IconButton icon="ph:download-simple" />
+                <IconButton onClick={download} icon="ph:download-simple" />
                 <IconButton
                   onClick={() => dispatch(decrementZoom())}
                   icon="ph:magnifying-glass-minus"

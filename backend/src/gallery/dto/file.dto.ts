@@ -1,8 +1,7 @@
-import { IsOptional, MaxLength } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import { FileType } from '../common/enums';
 import { AppFile } from '../enities/file.entity';
 import { getViewUrl } from 'src/utils';
-import { IsNull } from 'typeorm';
 import * as path from 'path';
 
 export class FileDto {
@@ -13,7 +12,8 @@ export class FileDto {
     this.dateUploaded = file.dateUploaded;
     this.size = file.size;
     this.type = file.getType();
-    this.fileUrl = getViewUrl(url, this.fileName, file.path);
+    this.fileUrl = getViewUrl('file', url, file.fileName, file.path);
+    this.downloadUrl = getViewUrl('file/download',url, file.fileName, file.path);
 
     if (file.getType() === FileType.AUDIO) {
       const fileName = path.parse(file.title).name;
@@ -42,6 +42,12 @@ export class FileDto {
    * @example http://localhost:3000/api/file/e65c4e38-c3dd-4db3-b7c6-b34a671a21cc-a_TFaIsN11Y.jpg
    */
   fileUrl: string;
+
+  /**
+   * Download url
+   * @example http://localhost:3000/api/file/e65c4e38-c3dd-4db3-b7c6-b34a671a21cc-a_TFaIsN11Y.jpg
+   */
+  downloadUrl: string;
 
   /**
    * File name

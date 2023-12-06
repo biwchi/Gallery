@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Res,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -22,18 +23,35 @@ export class FileController {
    */
   @Get('/:fileName')
   getFile(@Param('fileName') name: string, @Res() res: Response) {
-    const rootPath = join(__dirname, '..', 'uploads');
+    const rootPath = join(__dirname, '..', '..', 'uploads');
     res.sendFile(name, { root: rootPath });
+  }
+
+  @Get('download/:fileName')
+  downloadFile(@Param('fileName') name: string, @Res() res: Response) {
+    const file = createReadStream(join(__dirname, '..', '..', 'uploads', name));
+
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename=${name}`);
+
+    file.pipe(res);
   }
 
   /**
    * Upload files
    */
   @Post()
-  @UseInterceptors(FileUploadInterceptor({ fieldName: 'file', fileFilter(req, file, callback) {
-      file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf-8')
-      callback(null, true)
-  }, }))
+  @UseInterceptors(
+    FileUploadInterceptor({
+      fieldName: 'file',
+      fileFilter(req, file, callback) {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+          'utf-8',
+        );
+        callback(null, true);
+      },
+    }),
+  )
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {

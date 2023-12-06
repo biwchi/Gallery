@@ -9,6 +9,7 @@ export type AppFile = {
   type: FileType;
   size: number
   fileUrl: string
+  downloadUrl: string
   dateUploaded: string;
   artist: string | null
   songName: strig | null
