@@ -1,17 +1,18 @@
-import { BaseService } from "@/services/BaseService";
-import { Paginate } from "../types";
-import { AppFile, GalleryServiceParams } from "./types";
+import { BaseService } from '@/services/BaseService'
+
+import { Paginate } from '../types'
+import { AppFile, GalleryServiceParams } from './types'
 
 class GalleryService extends BaseService {
   public getAll(params?: GalleryServiceParams) {
-    return this.instance.get<Paginate<AppFile>>("gallery", { params: params });
+    return this.instance.get<Paginate<AppFile>>('gallery', { params: params })
   }
 
   public createFiles(data: FormData) {
-    return this.instance.post("gallery", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    return this.instance.post('gallery', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
   }
 }
 
-export default new GalleryService();
+export default new GalleryService()

@@ -1,39 +1,35 @@
-import styles from "./Modal.module.scss";
+import { useEffect, useRef } from 'react'
 
-import { useClickOutside } from "@/hooks";
-import { useEffect, useRef } from "react";
-import ReactPortal from "../../ReactPortal";
-import { IconButton } from '@/components/UI/IconButton';
+import { IconButton } from '@/components/UI/IconButton'
+
+import { useClickOutside } from '@/hooks'
+
+import ReactPortal from '../../ReactPortal'
+import styles from './Modal.module.scss'
 
 type ModalProps = {
-  title?: string;
-  noHeader?: boolean;
-  isModal: boolean;
-  toggleModal: (value?: boolean) => void;
-  children: JSX.Element;
-};
+  title?: string
+  noHeader?: boolean
+  isModal: boolean
+  toggleModal: (value?: boolean) => void
+  children: JSX.Element
+}
 
-export function Modal({
-  children,
-  title,
-  noHeader,
-  isModal,
-  toggleModal,
-}: ModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
+export function Modal({ children, title, noHeader, isModal, toggleModal }: ModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
 
-  const handleClose = () => toggleModal(false);
+  const handleClose = () => toggleModal(false)
 
   useEffect(() => {
     const handleEvent = (e: KeyboardEvent) => {
-      e.code == "Escape" ? handleClose() : null;
-    };
+      e.code == 'Escape' ? handleClose() : null
+    }
 
-    addEventListener("keydown", handleEvent);
-    if (!isModal) removeEventListener("keydown", handleEvent);
-  }, [isModal]);
+    addEventListener('keydown', handleEvent)
+    if (!isModal) removeEventListener('keydown', handleEvent)
+  }, [isModal])
 
-  useClickOutside(modalRef, () => handleClose());
+  useClickOutside(modalRef, () => handleClose())
   return (
     <>
       {isModal && (
@@ -55,5 +51,5 @@ export function Modal({
         </ReactPortal>
       )}
     </>
-  );
+  )
 }

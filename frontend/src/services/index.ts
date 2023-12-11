@@ -1,3 +1,3 @@
-import AuthService from "@/services/AuthService";
+import AuthService from '@/services/AuthService'
 
-export { AuthService };
+export { AuthService }

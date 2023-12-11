@@ -1,4 +1,4 @@
-@import "@scss/utils";
+@import '@scss/utils';
 
 .card {
   position: relative;
@@ -36,7 +36,7 @@
       overflow: hidden;
       word-break: break-all;
       font-size: var(--fs-base);
-      @include line-clamp(2)
+      @include line-clamp(2);
     }
 
     .date {

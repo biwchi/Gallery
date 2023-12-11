@@ -1,7 +1,8 @@
-import styles from './Default.module.scss'
+import { Outlet } from 'react-router-dom'
 
-import { Outlet } from "react-router-dom";
-import { Header } from "@/components/Header";
+import { Header } from '@/components/Header'
+
+import styles from './Default.module.scss'
 
 export function DefaultLayout() {
   return (
@@ -9,5 +10,5 @@ export function DefaultLayout() {
       <Header />
       <Outlet />
     </div>
-  );
+  )
 }

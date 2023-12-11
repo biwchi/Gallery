@@ -1,8 +1,8 @@
-import styles from "./Button.module.scss";
+import { Icon } from '@iconify-icon/react/dist/iconify.js'
+import { cva, VariantProps } from 'class-variance-authority'
+import { ButtonHTMLAttributes } from 'react'
 
-import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import { VariantProps, cva } from "class-variance-authority";
-import { ButtonHTMLAttributes } from "react";
+import styles from './Button.module.scss'
 
 const button = cva(styles.button, {
   variants: {
@@ -18,24 +18,24 @@ const button = cva(styles.button, {
   },
   compoundVariants: [
     {
-      variant: ["base"],
+      variant: ['base'],
       class: styles.disabled,
     },
   ],
   defaultVariants: {
-    variant: "base",
-    size: "default",
+    variant: 'base',
+    size: 'default',
   },
-});
+})
 
 type ButtonProps = {
-  text: string;
-  leftIcon?: string;
-  rightIcon?: string;
-  loading?: boolean;
-  children?: JSX.Element;
+  text: string
+  leftIcon?: string
+  rightIcon?: string
+  loading?: boolean
+  children?: JSX.Element
 } & ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof button>;
+  VariantProps<typeof button>
 
 export function Button({
   leftIcon,
@@ -50,16 +50,11 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button
-      {...props}
-      className={button({ variant, size, display }) + " " + className}
-    >
+    <button {...props} className={button({ variant, size, display }) + ' ' + className}>
       {leftIcon && <Icon className={styles.iconLeft} icon={leftIcon} />}
       <span>{children || text}</span>
       {loading && <Icon className={styles.loader} icon="ph:spinner" />}
-      {rightIcon && !loading && (
-        <Icon className={styles.iconRight} icon={rightIcon} />
-      )}
+      {rightIcon && !loading && <Icon className={styles.iconRight} icon={rightIcon} />}
     </button>
-  );
+  )
 }

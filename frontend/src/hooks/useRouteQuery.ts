@@ -1,38 +1,36 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
-export function useRouteQuery(
-  queryName: string,
-): [string | null, (value: string) => void] {
-  const navigate = useNavigate();
+export function useRouteQuery(queryName: string): [string | null, (value: string) => void] {
+  const navigate = useNavigate()
 
-  const [params, setParams] = useSearchParams();
-  const [query, setThisQuery] = useState(params.get(queryName));
+  const [params, setParams] = useSearchParams()
+  const [query, setThisQuery] = useState(params.get(queryName))
 
   const setQuery = (value: string | undefined) => {
-    if (params.has(queryName, value)) return;
+    if (params.has(queryName, value)) return
 
     setParams((prevParams) => {
       if (!value) {
-        prevParams.delete(queryName);
+        prevParams.delete(queryName)
       } else {
-        prevParams.set(queryName, value);
+        prevParams.set(queryName, value)
       }
 
-      navigate({ search: `?${prevParams.toString()}` });
-      return prevParams;
-    });
-  };
+      navigate({ search: `?${prevParams.toString()}` })
+      return prevParams
+    })
+  }
 
   useEffect(() => {
-    const queryParam = params.get(queryName);
+    const queryParam = params.get(queryName)
     if (!queryParam) {
-      setThisQuery(null);
-      return;
+      setThisQuery(null)
+      return
     }
-    setQuery(queryParam);
-    setThisQuery(queryParam);
-  }, [params.get(queryName)]);
+    setQuery(queryParam)
+    setThisQuery(queryParam)
+  }, [params.get(queryName)])
 
-  return [query, setQuery];
+  return [query, setQuery]
 }

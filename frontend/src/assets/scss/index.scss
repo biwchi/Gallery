@@ -1,19 +1,19 @@
-@use "./reset";
+@use './reset';
 
 //Variables
-@use "./variables";
+@use './variables';
 
 //Utils
 @use './utils/animation';
 @use './utils/functions';
 
-//Components 
-@use "./components/range";
+//Components
+@use './components/range';
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 body {
   background-color: var(--color-background);
   color: var(--color-text);
-  font-family:'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }

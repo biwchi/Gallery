@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react'
 
-export function useLoading<T, A extends any[]>(
+export function useLoading<T, A extends unknown[]>(
   action: (...args: A) => Promise<T>,
 ): [(...args: A) => Promise<T>, boolean] {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const doAction = async (...args: A) => {
-    setIsLoading(true);
-    return action(...args).finally(() => setIsLoading(false));
-  };
+    setIsLoading(true)
+    return action(...args).finally(() => setIsLoading(false))
+  }
 
-  return [doAction, isLoading];
+  return [doAction, isLoading]
 }

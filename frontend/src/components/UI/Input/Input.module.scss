@@ -22,7 +22,7 @@
 
   &::after,
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     bottom: 0;
     left: 0;
@@ -34,7 +34,7 @@
   }
 
   &::before {
-    content: "";
+    content: '';
     transition: width 0.15s ease;
     z-index: 10;
     width: 0;

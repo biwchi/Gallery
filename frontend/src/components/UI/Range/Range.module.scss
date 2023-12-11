@@ -25,11 +25,7 @@
     width: 100%;
     border-radius: 50%;
     animation: loading infinite linear 3s;
-    background-image: repeating-linear-gradient(
-      -42.4deg,
-      #7400a8 0 10px,
-      #3f2052 10px 20px
-    );
+    background-image: repeating-linear-gradient(-42.4deg, #7400a8 0 10px, #3f2052 10px 20px);
   }
 
   .progress {

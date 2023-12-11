@@ -1,106 +1,100 @@
+import { Icon } from '@iconify-icon/react/dist/iconify.js'
+import clsx from 'clsx'
+import { useEffect, useState } from 'react'
+import useTransition from 'react-transition-state'
+
+import { useAppDispatch, useAppSelector } from '@/hooks'
+import { AppFile } from '@/services/types'
+import { mediaViewerActions, selectMediaViewer } from '@/store/mediaViewerSlice'
+
+import ReactPortal from '../ReactPortal'
+import { IconButton } from '../UI/IconButton'
+import styles from './MediaViewer.module.scss'
 import './MediaViewer.scss'
-import styles from "./MediaViewer.module.scss";
+import { MediaViewerSlide } from './MediaViewerSlide'
 
-import ReactPortal from "../ReactPortal";
-import useTransition from "react-transition-state";
-
-import {
-  mediaViewerActions,
-  selectMediaViewer,
-} from "@/store/mediaViewerSlice";
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks";
-import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import { AppFile } from "@/services/types";
-import clsx from "clsx";
-import { MediaViewerSlide } from "./MediaViewerSlide";
-import { IconButton } from '../UI/IconButton';
-
-export type Slide = AppFile | undefined;
+export type Slide = AppFile | undefined
 
 export function MediaViewer() {
-  const mediaViewer = useAppSelector(selectMediaViewer);
-  const dispatch = useAppDispatch();
+  const mediaViewer = useAppSelector(selectMediaViewer)
+  const dispatch = useAppDispatch()
 
-  const [slide, setSlide] = useState<Slide | null>(null);
+  const [slide, setSlide] = useState<Slide | null>(null)
   const [state, toggle] = useTransition({
     timeout: 300,
     preEnter: true,
     unmountOnExit: true,
-  });
+  })
 
-  const { isOpened, isMoveable, currentFileIndex, files } = mediaViewer;
+  const { isOpened, isMoveable, currentFileIndex, files } = mediaViewer
   const {
     setFiles,
     toggleMediaViewer,
     incrementZoom,
+
     decrementZoom,
     currentFileIndexIncrement,
     currentFileIndexDecrement,
-  } = mediaViewerActions;
+  } = mediaViewerActions
 
   const handleClose = () => {
-    dispatch(setFiles([]));
-    dispatch(toggleMediaViewer(false));
-  };
+    dispatch(setFiles([]))
+    dispatch(toggleMediaViewer(false))
+  }
 
-  const hasNext = () => !!files[currentFileIndex + 1];
-  const hasPrev = () => !!files[currentFileIndex - 1];
-  const slideNext = () => dispatch(currentFileIndexIncrement());
-  const slidePrev = () => dispatch(currentFileIndexDecrement());
+  const hasNext = () => !!files[currentFileIndex + 1]
+  const hasPrev = () => !!files[currentFileIndex - 1]
+  const slideNext = () => dispatch(currentFileIndexIncrement())
+  const slidePrev = () => dispatch(currentFileIndexDecrement())
 
   function download() {
     window.open(slide?.downloadUrl)
   }
 
   function slidesUpdate() {
-    return setSlide(files[currentFileIndex]);
+    return setSlide(files[currentFileIndex])
   }
 
   function keyboardEvents(e: KeyboardEvent) {
-    if (e.key === "Escape") return handleClose();
-    else if (e.key === "ArrowLeft") return slidePrev();
-    else if (e.key === "ArrowRight") return slideNext();
+    if (e.key === 'Escape') return handleClose()
+    else if (e.key === 'ArrowLeft') return slidePrev()
+    else if (e.key === 'ArrowRight') return slideNext()
   }
 
   function wheelEvent(e: WheelEvent) {
-    if (e.ctrlKey) return;
-    if (e.deltaY > 0) slideNext();
-    else slidePrev();
+    if (e.ctrlKey) return
+    if (e.deltaY > 0) slideNext()
+    else slidePrev()
   }
 
   useEffect(() => {
     if (isOpened) {
-      toggle(true);
-      document.addEventListener("keydown", keyboardEvents);
-      document.addEventListener("wheel", wheelEvent);
+      toggle(true)
+      document.addEventListener('keydown', keyboardEvents)
+      document.addEventListener('wheel', wheelEvent)
     }
 
-    if (!isOpened) toggle(false);
+    if (!isOpened) toggle(false)
 
     return () => {
-      document.removeEventListener("keydown", keyboardEvents);
-      document.removeEventListener("wheel", wheelEvent);
-    };
-  }, [isOpened]);
+      document.removeEventListener('keydown', keyboardEvents)
+      document.removeEventListener('wheel', wheelEvent)
+    }
+  }, [isOpened])
 
   useEffect(() => {
-    slidesUpdate();
-  }, [currentFileIndex]);
+    slidesUpdate()
+  }, [currentFileIndex])
 
   return (
     <>
       {state.isMounted && slide && (
         <ReactPortal wrapperId="mediaViewer">
-          <div
-            className={clsx(styles.mediaViewer, `media-viwer-animation ${state.status}`)}
-          >
+          <div className={clsx(styles.mediaViewer, `media-viwer-animation ${state.status}`)}>
             <div className={styles.header}>
               <h1>{slide.title}</h1>
 
-              <span className={styles.index}>{`${currentFileIndex + 1}/${
-                files.length
-              }`}</span>
+              <span className={styles.index}>{`${currentFileIndex + 1}/${files.length}`}</span>
 
               <div className={styles.actions}>
                 <IconButton onClick={download} icon="ph:download-simple" />
@@ -119,11 +113,7 @@ export function MediaViewer() {
             {!isMoveable.moveable && (
               <>
                 <ButtonNavigation disabled={!hasPrev()} onClick={slidePrev} />
-                <ButtonNavigation
-                  disabled={!hasNext()}
-                  onClick={slideNext}
-                  isRight
-                />
+                <ButtonNavigation disabled={!hasNext()} onClick={slideNext} isRight />
               </>
             )}
 
@@ -132,7 +122,7 @@ export function MediaViewer() {
         </ReactPortal>
       )}
     </>
-  );
+  )
 }
 
 function ButtonNavigation({
@@ -140,9 +130,9 @@ function ButtonNavigation({
   disabled,
   onClick,
 }: {
-  disabled: boolean;
-  isRight?: boolean;
-  onClick?: () => void;
+  disabled: boolean
+  isRight?: boolean
+  onClick?: () => void
 }) {
   return (
     <button
@@ -153,7 +143,7 @@ function ButtonNavigation({
         isRight && styles.right,
       )}
     >
-      <Icon icon={isRight ? "ph:arrow-right" : "ph:arrow-left"} />
+      <Icon icon={isRight ? 'ph:arrow-right' : 'ph:arrow-left'} />
     </button>
-  );
+  )
 }

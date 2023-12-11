@@ -1,10 +1,10 @@
-import "axios";
+import 'axios'
 
-declare module "axios" {
+declare module 'axios' {
   interface InternalAxiosRequestConfig {
-    retry?: boolean;
+    retry?: boolean
   }
   interface AxiosRequestConfig {
-    retry?: boolean;
+    retry?: boolean
   }
 }

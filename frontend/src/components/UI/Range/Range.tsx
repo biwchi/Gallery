@@ -1,25 +1,19 @@
-import clsx from "clsx";
-import styles from "./Range.module.scss";
+import clsx from 'clsx'
+import { ChangeEvent } from 'react'
 
-import { ChangeEvent } from "react";
+import styles from './Range.module.scss'
 
 type RangeProps = {
-  value: string | number;
-  maxValue: string | number;
-  onPress?: (isPressed: boolean) => void;
-  onChange: (newVal: string | number) => void;
-  isLoading?: boolean;
-};
+  value: string | number
+  maxValue: string | number
+  onPress?: (isPressed: boolean) => void
+  onChange: (newVal: string | number) => void
+  isLoading?: boolean
+}
 
-export function Range({
-  value,
-  maxValue,
-  onChange,
-  onPress,
-  isLoading,
-}: RangeProps) {
+export function Range({ value, maxValue, onChange, onPress, isLoading }: RangeProps) {
   function onChangeInput(e: ChangeEvent<HTMLInputElement>) {
-    onChange(Number(e.target.value));
+    onChange(Number(e.target.value))
   }
 
   return (
@@ -44,5 +38,5 @@ export function Range({
         />
       </div>
     </div>
-  );
+  )
 }

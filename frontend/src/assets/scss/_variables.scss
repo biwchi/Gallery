@@ -8,8 +8,8 @@ $theme: (
 
 $colors: (
   white-light: #d6f5eb,
-  "white": #ffffff,
-  "black": #000000,
+  'white': #ffffff,
+  'black': #000000,
 );
 
 $color-primary: #5cd6ad;
@@ -40,7 +40,7 @@ $breakpoints: (
     @each $key, $value in $theme {
       --color-#{$key}: #{$value};
 
-      //Generate colors opacity 
+      //Generate colors opacity
       @for $i from 1 through 19 {
         $opacity: calc($i / 20);
 
@@ -117,6 +117,5 @@ $breakpoints: (
   --shadow-color: cl(var(--color-black), 0.1);
 
   --shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px var(--shadow-color);
-  --shadow-md: 0 4px 6px -1px var(--shadow-color),
-    0 2px 4px -2px var(--shadow-color);
+  --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color);
 }

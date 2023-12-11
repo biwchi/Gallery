@@ -1,4 +1,4 @@
-input[type="range"] {
+input[type='range'] {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -9,12 +9,12 @@ input[type="range"] {
   -webkit-appearance: none;
 }
 
-input[type="range"]:hover::-webkit-slider-thumb {
+input[type='range']:hover::-webkit-slider-thumb {
   transform: scale(1);
   opacity: 1;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
   position: relative;
@@ -31,7 +31,7 @@ input[type="range"]::-webkit-slider-thumb {
   transition: 0.15s ease;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
   height: 100%;
   border-radius: 9999px;
   background-color: var(--color-primary-200);

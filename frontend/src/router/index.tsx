@@ -1,7 +1,8 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import { Media } from "@/pages/Media";
-import { DefaultLayout } from "@/layouts/Default";
+import { Media } from '@/pages/Media'
+
+import { DefaultLayout } from '@/layouts/Default'
 
 function RoutesRouter() {
   return (
@@ -12,7 +13,7 @@ function RoutesRouter() {
         </Route>
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export const AppRouter = RoutesRouter;
+export const AppRouter = RoutesRouter

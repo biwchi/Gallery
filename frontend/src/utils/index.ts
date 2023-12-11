@@ -1,2 +1,2 @@
-export * from "./createWrapperAndAppendToBody";
+export * from './createWrapperAndAppendToBody'
 export * from './getTImeFromSeconds'

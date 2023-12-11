@@ -1,70 +1,68 @@
-import styles from "./AudioPlayer.module.scss";
+import { Icon } from '@iconify-icon/react/dist/iconify.js'
+import clsx from 'clsx'
+import { useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 
-import { Icon } from "@iconify-icon/react/dist/iconify.js";
-import ReactPortal from "../ReactPortal";
-import { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useToggle } from "@/hooks";
-import { useSelector } from "react-redux";
-import {
-  audioPlayerActions,
-  selectAudioPlayer,
-} from "@/store/audioPlayerSlice";
-import { getTimeFromSeconds } from "@/utils";
-import { useCurrentSound } from "@/hooks/useCurrentSound";
-import clsx from "clsx";
-import { IconButton } from '../UI/IconButton';
-import { Range } from '../UI/Range';
+import { useAppDispatch, useToggle } from '@/hooks'
+import { useCurrentSound } from '@/hooks/useCurrentSound'
+import { audioPlayerActions, selectAudioPlayer } from '@/store/audioPlayerSlice'
+import { getTimeFromSeconds } from '@/utils'
+
+import ReactPortal from '../ReactPortal'
+import { IconButton } from '../UI/IconButton'
+import { Range } from '../UI/Range'
+import styles from './AudioPlayer.module.scss'
 
 const icon = {
-  pause: "line-md:pause-to-play-filled-transition",
-  play: "line-md:play-filled-to-pause-transition",
-};
+  pause: 'line-md:pause-to-play-filled-transition',
+  play: 'line-md:play-filled-to-pause-transition',
+}
 
 const initialPlayerState = {
   duration: 0,
   currentTime: 0,
-  currentTimeFormatted: "",
-  durationFormatted: "",
+  currentTimeFormatted: '',
+  durationFormatted: '',
   bufferedTime: 0,
-};
+}
 
 export function AudioPlayer() {
-  const audioPlayerRef = useRef<HTMLAudioElement>(null);
-  const interval = useRef<NodeJS.Timeout | undefined>();
+  const audioPlayerRef = useRef<HTMLAudioElement>(null)
+  const interval = useRef<NodeJS.Timeout | undefined>()
 
-  const currentSound = useCurrentSound();
-  const audioPlayer = useSelector(selectAudioPlayer);
-  const dispatch = useAppDispatch();
+  const currentSound = useCurrentSound()
+  const audioPlayer = useSelector(selectAudioPlayer)
+  const dispatch = useAppDispatch()
 
-  const { files } = audioPlayer;
-  const { incrementIndex, decrementIndex, setFiles } = audioPlayerActions;
+  const { files } = audioPlayer
+  const { incrementIndex, decrementIndex, setFiles } = audioPlayerActions
 
-  const [isPaused, togglePaused] = useToggle(true);
-  const [isLoading, toggleLoading] = useToggle(true);
-  const [isHidden, toggleHidden] = useToggle(false);
-  const [playerState, setPlayerState] = useState(initialPlayerState);
+  const [isPaused, togglePaused] = useToggle(true)
+  const [isLoading, toggleLoading] = useToggle(true)
+  const [isHidden, toggleHidden] = useToggle(false)
+  const [playerState, setPlayerState] = useState(initialPlayerState)
 
   useEffect(() => {
-    const player = audioPlayerRef.current;
+    const player = audioPlayerRef.current
 
-    if (!player) return;
+    if (!player) return
 
     if (!isPaused) {
-      player.play();
+      player.play()
 
       interval.current = setInterval(() => {
-        if (!player || isNaN(player.duration)) return;
+        if (!player || isNaN(player.duration)) return
 
-        const currentTime = player.currentTime;
-        const duration = playerState.duration || player.duration;
-        const bufferedLength = player.buffered.length;
-        const bufferedTime = player.buffered.end(bufferedLength - 1);
+        const currentTime = player.currentTime
+        const duration = playerState.duration || player.duration
+        const bufferedLength = player.buffered.length
+        const bufferedTime = player.buffered.end(bufferedLength - 1)
 
-        const durationFormatted = getTimeFromSeconds(duration);
-        const currentTimeFormatted = getTimeFromSeconds(currentTime);
+        const durationFormatted = getTimeFromSeconds(duration)
+        const currentTimeFormatted = getTimeFromSeconds(currentTime)
 
-        if (currentTime >= bufferedTime) toggleLoading(true);
-        else toggleLoading(false);
+        if (currentTime >= bufferedTime) toggleLoading(true)
+        else toggleLoading(false)
 
         setPlayerState({
           duration,
@@ -72,31 +70,25 @@ export function AudioPlayer() {
           currentTime,
           durationFormatted,
           currentTimeFormatted,
-        });
-      }, 400);
+        })
+      }, 400)
 
-      return;
+      return
     }
 
-    player.pause();
-    clearInterval(interval.current ? interval.current : undefined);
-  }, [isPaused]);
+    player.pause()
+    clearInterval(interval.current ? interval.current : undefined)
+  }, [isPaused])
 
   useEffect(() => {
-    if (!audioPlayerRef.current) return;
-    setPlayerState(initialPlayerState);
-    audioPlayerRef.current.play();
-  }, [currentSound]);
+    if (!audioPlayerRef.current) return
+    setPlayerState(initialPlayerState)
+    audioPlayerRef.current.play()
+  }, [currentSound])
 
   return (
     <ReactPortal wrapperId="audioPlayer">
-      <div
-        className={clsx(
-          styles.player,
-          !files.length && styles.off,
-          isHidden && styles.hidden,
-        )}
-      >
+      <div className={clsx(styles.player, !files.length && styles.off, isHidden && styles.hidden)}>
         {currentSound.fileName && (
           <audio
             ref={audioPlayerRef}
@@ -112,42 +104,37 @@ export function AudioPlayer() {
 
         <button onClick={() => toggleHidden()} className={styles.playerHide}>
           <div>
-            <span>{isHidden ? "Show" : "Hide"}</span>
-            <Icon icon={isHidden ? "ph:caret-up-bold" : "ph:caret-down-bold"} />
+            <span>{isHidden ? 'Show' : 'Hide'}</span>
+            <Icon icon={isHidden ? 'ph:caret-up-bold' : 'ph:caret-down-bold'} />
           </div>
         </button>
 
         <div className={styles.playerBody}>
           <div className={styles.buttons}>
             <IconButton
-              size={"bigIcon"}
+              size={'bigIcon'}
               icon="material-symbols:skip-previous-rounded"
               onClick={() => dispatch(decrementIndex())}
             />
             <IconButton
-              size={"bigIcon"}
+              size={'bigIcon'}
               onClick={() => togglePaused()}
               icon={isPaused ? icon.pause : icon.play}
             />
             <IconButton
-              size={"bigIcon"}
+              size={'bigIcon'}
               icon="material-symbols:skip-next-rounded"
               onClick={() => dispatch(incrementIndex())}
             />
           </div>
 
-          <div
-            className={clsx(
-              styles.information,
-              (!files.length || isHidden) && styles.hidden,
-            )}
-          >
+          <div className={clsx(styles.information, (!files.length || isHidden) && styles.hidden)}>
             <p className={styles.songName}>
               {currentSound.artist && (
                 <span className={styles.artist}>{currentSound.artist} -</span>
               )}
               <span className={styles.name}>
-                {currentSound.songName || currentSound.title.split(".")[0]}
+                {currentSound.songName || currentSound.title.split('.')[0]}
               </span>
             </p>
 
@@ -156,20 +143,20 @@ export function AudioPlayer() {
               duration={playerState.duration}
               currentTime={playerState.currentTime}
               onPressed={(pressed) => {
-                if (pressed && isPaused) return;
+                if (pressed && isPaused) return
 
-                if (pressed) audioPlayerRef.current?.pause();
-                else audioPlayerRef.current?.play();
+                if (pressed) audioPlayerRef.current?.pause()
+                else audioPlayerRef.current?.play()
               }}
               onRewind={(newTime) => {
-                if (!audioPlayerRef.current) return;
-                audioPlayerRef.current.currentTime = newTime;
+                if (!audioPlayerRef.current) return
+                audioPlayerRef.current.currentTime = newTime
               }}
             />
 
             <div className={styles.timing}>
-              <span>{playerState.currentTimeFormatted || "0:00"}</span>
-              <span>{playerState.durationFormatted || "0:00"}</span>
+              <span>{playerState.currentTimeFormatted || '0:00'}</span>
+              <span>{playerState.durationFormatted || '0:00'}</span>
             </div>
           </div>
 
@@ -178,8 +165,8 @@ export function AudioPlayer() {
             <AudioVolume
               playerVolume={audioPlayerRef.current?.volume || 100}
               onChangeVolume={(volume) => {
-                if (!audioPlayerRef.current) return;
-                audioPlayerRef.current.volume = volume / 100;
+                if (!audioPlayerRef.current) return
+                audioPlayerRef.current.volume = volume / 100
               }}
             />
             <Icon icon="material-symbols:volume-down-rounded" />
@@ -187,16 +174,16 @@ export function AudioPlayer() {
         </div>
       </div>
     </ReactPortal>
-  );
+  )
 }
 
 type AudioProgressBarProps = {
-  duration: number;
-  currentTime: number;
-  isLoading: boolean;
-  onRewind: (newTime: number) => void;
-  onPressed: (isPressed: boolean) => void;
-};
+  duration: number
+  currentTime: number
+  isLoading: boolean
+  onRewind: (newTime: number) => void
+  onPressed: (isPressed: boolean) => void
+}
 
 function AudioProgressBar({
   duration,
@@ -205,16 +192,16 @@ function AudioProgressBar({
   onRewind,
   onPressed,
 }: AudioProgressBarProps) {
-  const [time, setTime] = useState(currentTime);
+  const [time, setTime] = useState(currentTime)
 
   function onChange(value: string | number) {
-    setTime(Number(value));
-    onRewind(Number(value));
+    setTime(Number(value))
+    onRewind(Number(value))
   }
 
   useEffect(() => {
-    setTime(currentTime);
-  }, [currentTime]);
+    setTime(currentTime)
+  }, [currentTime])
 
   return (
     <Range
@@ -224,30 +211,26 @@ function AudioProgressBar({
       onChange={(newVal) => onChange(newVal)}
       onPress={(val) => onPressed(val)}
     />
-  );
+  )
 }
 
 function AudioVolume({
   playerVolume,
   onChangeVolume,
 }: {
-  playerVolume: number;
-  onChangeVolume: (newVolume: number) => void;
+  playerVolume: number
+  onChangeVolume: (newVolume: number) => void
 }) {
-  const [volume, setVolume] = useState(playerVolume);
+  const [volume, setVolume] = useState(playerVolume)
 
   function onChange(value: string | number) {
-    setVolume(Number(value));
-    onChangeVolume(Number(value));
+    setVolume(Number(value))
+    onChangeVolume(Number(value))
   }
 
   return (
     <div className={styles.slider}>
-      <Range
-        value={volume}
-        maxValue={100}
-        onChange={(newValue) => onChange(newValue)}
-      />
+      <Range value={volume} maxValue={100} onChange={(newValue) => onChange(newValue)} />
     </div>
-  );
+  )
 }
