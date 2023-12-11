@@ -45,20 +45,21 @@ export function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
   const { toggleMoveable } = mediaViewerActions;
   const { breakpoint, windowSize } = useBreakpoints();
 
-  const checkMoveable = () => {
-    if (!mediaPlayerContentRef.current) return initialMoveable;
+const checkMoveable = () => {
+  if (!mediaPlayerContentRef.current) {
+    return initialMoveable;
+  }
 
-    let { width, height } =
-      mediaPlayerContentRef.current.getBoundingClientRect();
+  const { width, height } = mediaPlayerContentRef.current.getBoundingClientRect();
 
-    const isMoveable = {
-      moveable: width >= windowSize.width || height >= windowSize.height,
-      x: width >= windowSize.width,
-      y: height >= windowSize.height,
-    };
-
-    return isMoveable;
+  const isMoveable = {
+    moveable: width >= windowSize.width || height >= windowSize.height,
+    x: width >= windowSize.width,
+    y: height >= windowSize.height,
   };
+
+  return isMoveable;
+};
 
   const imageWidth = () => {
     if (breakpoint.xs) return breakpointsWidth.xs;
@@ -70,21 +71,24 @@ export function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
     return breakpointsWidth.lg;
   };
 
-  function slideStyle() {
-    if (zoom === 1 || !isMoveable.moveable) {
-      deltaPosition.current.lastX = 0;
-      deltaPosition.current.lastY = 0;
-    }
-    if (zoom > 1) {
-      deltaPosition.current.lastX /= zoom;
-      deltaPosition.current.lastY /= zoom;
-    }
-
-    return {
-      transitionDuration: `${zoomTransitionDuration}ms`,
-      transform: `translate3d(${deltaPosition.current.lastX}px, ${deltaPosition.current.lastY}px, 0) scale(${zoom})`,
-    };
+function slideStyle() {
+  let { lastX, lastY } = deltaPosition.current;
+  
+  if (zoom === 1 || !isMoveable.moveable) {
+    lastX = 0;
+    lastY = 0;
   }
+  
+  if (zoom > 1) {
+    lastX /= zoom;
+    lastY /= zoom;
+  }
+
+  return {
+    transitionDuration: `${zoomTransitionDuration}ms`,
+    transform: `translate3d(${lastX}px, ${lastY}px, 0) scale(${zoom})`,
+  };
+}
 
   useEffect(() => {
     setTimeout(() => {
@@ -103,7 +107,7 @@ export function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
     if (!slideContent || !slide) return;
 
     function mouseDown(e: MouseEvent) {
-      if (!slideContent || isPressed.current) return;
+      if (isPressed.current) return;
 
       isPressed.current = true;
 
@@ -117,7 +121,7 @@ export function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
     function mouseMove(e: MouseEvent) {
       if (!isPressed.current || !slideContent || !slide) return;
 
-      let newPosition = {
+      const newPosition = {
         x: e.clientX - deltaPosition.current.x + deltaPosition.current.lastX,
         y: e.clientY - deltaPosition.current.y + deltaPosition.current.lastY,
       };
@@ -126,18 +130,18 @@ export function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
       if (!isMoveable.y) newPosition.y = 0;
 
       slide.style.transform = `translate3d(${newPosition.x}px, ${newPosition.y}px, 0) scale(${zoom})`;
-      slide.style.transitionDuration = "0ms";
+      slide.style.transitionDuration = 'none';
     }
 
     function mouseUp(e: MouseEvent) {
-      if (!slide || !slideContent || !isPressed.current) return;
+      if (!slide || !isPressed.current) return;
 
       const { lastX, lastY } = deltaPosition.current;
 
       isPressed.current = false;
       deltaPosition.current.lastX = e.clientX - deltaPosition.current.x + lastX;
       deltaPosition.current.lastY = e.clientY - deltaPosition.current.y + lastY;
-      slide.style.transition = `${zoomTransitionDuration}ms`;
+      slide.style.transitionDuration = `${zoomTransitionDuration}ms`;
     }
 
     if (isMoveable.moveable) {
