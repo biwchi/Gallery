@@ -128,7 +128,7 @@ export function MediaViewerSlide({ slide }: MediaViewerSlideProps) {
       if (!isMoveable.y) newPosition.y = 0
 
       slide.style.transform = `translate3d(${newPosition.x}px, ${newPosition.y}px, 0) scale(${zoom})`
-      slide.style.transitionDuration = 'none'
+      slide.style.transitionDuration = '0ms'
     }
 
     function mouseUp(e: MouseEvent) {
