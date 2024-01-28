@@ -21,7 +21,7 @@ function buildDataSource(
     database: configService.get('POSTGRES_DB'),
     entities,
     migrations: ['dist/migrator/migrations/*{.ts,.js}'],
-    synchronize: false,
+    synchronize: true,
     logging,
     cache: false,
   };

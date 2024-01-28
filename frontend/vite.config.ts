@@ -11,4 +11,9 @@ export default defineConfig({
       "@scss/": `${path.resolve(__dirname, "src/assets/scss")}/`,
     },
   },
+  server: {
+    port: 3000,
+    strictPort: true,
+    host: true,
+  }
 });
