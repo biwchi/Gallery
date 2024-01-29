@@ -1,0 +1,62 @@
+.mediaViewer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--color-background--20);
+  backdrop-filter: blur(2px);
+
+  .navigationButton {
+    position: absolute;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    height: 100%;
+    cursor: pointer;
+    align-items: center;
+    padding: 0 var(--space-xl);
+    opacity: 0;
+    font-size: var(--fs-md);
+    transition: opacity 0.15s ease;
+    left: 0;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:active {
+      background-color: var(--color-black--10);
+    }
+
+    &.disabled {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    &.right {
+      left: auto;
+      right: 0;
+    }
+  }
+}
+
+.header {
+  position: relative;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  background: linear-gradient(0deg, #00000000 0%, var(--color-black) 100%);
+
+  .index {
+    text-align: center;
+    color: var(--color-text--50);
+  }
+
+  .actions {
+    display: flex;
+    gap: 4px;
+  }
+}

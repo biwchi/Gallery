@@ -1,0 +1,47 @@
+.button {
+  display: flex;
+}
+
+//size
+.small {
+  padding: var(--space-xxxs);
+  font-size: var(--fs-base);
+}
+
+.default {
+  padding: var(--space-sm);
+  font-size: var(--fs-md);
+}
+
+.bigIcon {
+  padding: var(--space-sm);
+  font-size: var(--fs-md);
+}
+
+//shape
+.square {
+  border-radius: 2px;
+}
+
+.circle {
+  border-radius: 9999px;
+}
+
+//variant
+.transparent {
+  background-color: transparent;
+  transition: 0.15s ease;
+  color: var(--color-text);
+
+  &:hover {
+    background-color: var(--color-primary--20);
+  }
+}
+
+//compound
+.disabled {
+  &:disabled {
+    color: var(--color-text);
+    opacity: 0.5;
+  }
+}

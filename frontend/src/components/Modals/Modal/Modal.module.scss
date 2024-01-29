@@ -1,0 +1,38 @@
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalBody {
+  z-index: 50;
+  min-width: 30rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-background);
+  padding: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 var(--space-base) 0;
+}
+
+.headerTitle {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-black--10);
+  backdrop-filter: blur(2px);
+}
